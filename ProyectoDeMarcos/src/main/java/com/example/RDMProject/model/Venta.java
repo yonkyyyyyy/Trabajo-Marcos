@@ -3,7 +3,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@Entity
+@Table(name = "venta")
 public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

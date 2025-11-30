@@ -1,5 +1,7 @@
 package com.example.RDMProject.model;
 import jakarta.persistence.*;
+@Entity
+@Table(name = "detallecompra")
 public class DetalleCompra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

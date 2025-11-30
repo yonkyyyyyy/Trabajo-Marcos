@@ -3,7 +3,7 @@ package com.example.RDMProject.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-
+@Entity
 @Table(name = "usuario")
 public class Usuario {
     @Id

@@ -1,11 +1,9 @@
 package com.example.RDMProject.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "TipoDocVenta")
 public class TipoDocVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
