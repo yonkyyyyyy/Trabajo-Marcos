@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - Florería RDM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark py-0" style="background-color: #2b2d3d;">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img style="height: 80px; width: auto;" src="/img/logo_empresa.png" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/productos">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="/categorias">Categorías</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" style="color: #2b2d3d;">Gestión de Categorías</h2>
+            <a class="btn btn-success text-white rounded-pill px-4" href="/categorias/nueva">
+                <i class="bi bi-plus-lg me-2"></i> Nueva Categoría
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cat : ${categoria}">
+                            <td class="ps-4 fw-bold" th:text="${cat.idCategoria}">1</td>
+                            <td th:text="${cat.descripcion}">Ramos</td>
+                            <td>
+                                <span class="badge rounded-pill" 
+                                      th:classappend="${cat.estado == 1} ? 'text-bg-success' : 'text-bg-secondary'"
+                                      th:text="${cat.estado == 1} ? 'Activo' : 'Inactivo'">
+                                    Activo
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a th:href="@{/categorias/editar/{id}(id=${cat.idCategoria})}" class="btn btn-sm btn-warning text-white rounded-pill me-1">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a th:href="@{/categorias/eliminar/{id}(id=${cat.idCategoria})}" 
+                                   class="btn btn-sm btn-danger rounded-pill"
+                                   onclick="return confirm('¿Seguro de eliminar esta categoría?');">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(categoria)}">
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                No hay categorías registradas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

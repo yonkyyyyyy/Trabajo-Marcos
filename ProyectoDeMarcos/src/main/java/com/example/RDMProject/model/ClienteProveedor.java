@@ -1,112 +1,67 @@
 package com.example.RDMProject.model;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size; // Para validar longitud
+
 @Entity
 @Table(name = "cliente_proveedor")
 public class ClienteProveedor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCliente;
-    private Integer nro_documento;
-    private String nombre_cliente;
+    @Column(name = "id_cliente") // Mantenemos tu corrección de BD
+    private Long id;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Column(name = "nombre_razon_social")
+    private String nombreRazonSocial;
+
+    @NotBlank(message = "El documento es obligatorio")
+    @Size(min = 8, max = 15, message = "El documento debe tener entre 8 y 15 caracteres")
+    @Column(name = "numero_documento")
+    private String numeroDocumento; 
+
+    private String telefono;
+
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "El formato del correo no es válido")
+    private String correo;
+
     private String direccion;
-    private String email;
-    private Integer celular;
-    private Integer estado;
-    private String DatosAdicionales;
-    private String genero;
-    private Integer tipoCliente;// 1 cliente 2 proveedor 0 ambos
+
+    private Integer tipo = 1; 
+
     @ManyToOne
-    @JoinColumn(name = "tipoDocumento")
+    @JoinColumn(name = "id_tipo_documento") 
     private TipoDocumento tipoDocumento;
 
-    public ClienteProveedor(){
+    public ClienteProveedor() {
     }
 
-    public Long getIdCliente() {
-        return idCliente;
-    }
+    // --- Getters y Setters ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
+    public String getNombreRazonSocial() { return nombreRazonSocial; }
+    public void setNombreRazonSocial(String nombreRazonSocial) { this.nombreRazonSocial = nombreRazonSocial; }
 
-    public Integer getNro_documento() {
-        return nro_documento;
-    }
+    public String getNumeroDocumento() { return numeroDocumento; }
+    public void setNumeroDocumento(String numeroDocumento) { this.numeroDocumento = numeroDocumento; }
 
-    public void setNro_documento(Integer nro_documento) {
-        this.nro_documento = nro_documento;
-    }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public String getNombre_cliente() {
-        return nombre_cliente;
-    }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    public void setNombre_cliente(String nombre_cliente) {
-        this.nombre_cliente = nombre_cliente;
-    }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public String getDireccion() {
-        return direccion;
-    }
+    public Integer getTipo() { return tipo; }
+    public void setTipo(Integer tipo) { this.tipo = tipo; }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getCelular() {
-        return celular;
-    }
-
-    public void setCelular(Integer celular) {
-        this.celular = celular;
-    }
-
-    public Integer getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Integer estado) {
-        this.estado = estado;
-    }
-
-    public String getDatosAdicionales() {
-        return DatosAdicionales;
-    }
-
-    public void setDatosAdicionales(String datosAdicionales) {
-        DatosAdicionales = datosAdicionales;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public Integer getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(Integer tipoCliente) {
-        this.tipoCliente = tipoCliente;
-    }
-
-    public TipoDocumento getTipoDocumento() {
-        return tipoDocumento;
-    }
-
-    public void setTipoDocumento(TipoDocumento tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
+    public TipoDocumento getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(TipoDocumento tipoDocumento) { this.tipoDocumento = tipoDocumento; }
 }

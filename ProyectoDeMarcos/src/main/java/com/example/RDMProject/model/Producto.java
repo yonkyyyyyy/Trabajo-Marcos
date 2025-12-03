@@ -1,45 +1,59 @@
 package com.example.RDMProject.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*; // Importante para las validaciones
 
 @Entity
 @Table(name = "productos")
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // --- CAMPOS CON VALIDACIÓN (Nuestro trabajo) ---
+
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
+
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
+
+    @NotNull(message = "El precio es obligatorio")
+    @Min(value = 0, message = "El precio no puede ser negativo")
     private Double precio;
+
     private String imagen;
+
+    @NotNull(message = "El stock es obligatorio")
+    @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer cantidad; // cantidad para el stock
+
+    // --- CAMPOS NUEVOS (Estructura de tu compañero) ---
+    // Los mantenemos para que la base de datos no falle, pero sin validación obligatoria por ahora
+
     private Double descuento;
     private Integer codigo_barra;
     private Long estado;
     private Double precio_compra;
     private Double peso_bruto;
     private Integer stock_minimo;
+
     @ManyToOne
     @JoinColumn(name = "idcategoria")
     private Categoria categoria;
+
     @ManyToOne
     @JoinColumn(name="idunidadmedida")
     private UnidadMedida unidadMedida;
 
+    // --- CONSTRUCTORES ---
 
     public Producto() {
     }
-/*
-    public Producto(Long id, String nombre, String descripcion, Double precio, String imagen, Integer cantidad) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.imagen = imagen;
-        this.cantidad = cantidad;
-    }*/
 
-    // Getters y Setters (Necesarios para que funcione)
+    // --- GETTERS Y SETTERS (Para TODOS los campos) ---
+
     public Long getId() {
         return id;
     }

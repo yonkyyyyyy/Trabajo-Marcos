@@ -11,44 +11,85 @@
 
     <nav class="navbar navbar-dark" style="background-color: #2b2d3d;">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi bi-arrow-left-circle me-2"></i> Volver al Inicio
+            <a class="navbar-brand" href="/productos">
+                <i class="bi bi-arrow-left-circle me-2"></i> Volver al Catálogo
             </a>
             <span class="navbar-text text-white">Panel de Administración</span>
         </div>
     </nav>
 
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+            <div class="col-md-8 col-lg-8">
                 
                 <div class="card shadow rounded-4 border-0">
                     <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
-                        <h2 class="fw-bold" style="color: #2b2d3d;">Registrar Producto</h2>
-                        <p class="text-muted">Ingresa los detalles del nuevo arreglo floral</p>
+                        <h2 class="fw-bold" style="color: #2b2d3d;" 
+                            th:text="${producto.id != null} ? 'Editar Producto' : 'Registrar Producto'">
+                            Producto
+                        </h2>
+                        <p class="text-muted">Ingresa los detalles del arreglo floral</p>
                     </div>
                     
                     <div class="card-body p-4">
-                        <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
+                        <form th:action="@{/productos/guardar}" th:object="${producto}" method="post" novalidate>
                             
+                            <input type="hidden" th:field="*{id}" />
+
                             <div class="mb-3">
                                 <label for="nombre" class="form-label fw-bold">Nombre del Producto</label>
-                                <input type="text" class="form-control rounded-3" id="nombre" th:field="*{nombre}" placeholder="Ej: Ramo de Rosas Rojas" required>
+                                <input type="text" class="form-control rounded-3" 
+                                       th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                                       id="nombre" th:field="*{nombre}" placeholder="Ej: Ramo de Rosas Rojas">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="descripcion" class="form-label fw-bold">Descripción</label>
-                                <textarea class="form-control rounded-3" id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Detalles del arreglo..." required></textarea>
+                                <textarea class="form-control rounded-3" 
+                                          th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid' : ''"
+                                          id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Detalles del arreglo..."></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="precio" class="form-label fw-bold">Precio (S/)</label>
-                                    <input type="number" step="0.01" class="form-control rounded-3" id="precio" th:field="*{precio}" placeholder="0.00" required>
+                                    <input type="number" step="0.01" class="form-control rounded-3" 
+                                           th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''"
+                                           id="precio" th:field="*{precio}" placeholder="0.00">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="cantidad" class="form-label fw-bold">Stock Inicial</label>
-                                    <input type="number" class="form-control rounded-3" id="cantidad" th:field="*{cantidad}" placeholder="0" required>
+                                    <input type="number" class="form-control rounded-3" 
+                                           th:classappend="${#fields.hasErrors('cantidad')} ? 'is-invalid' : ''"
+                                           id="cantidad" th:field="*{cantidad}" placeholder="0">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="categoria" class="form-label fw-bold">Categoría</label>
+                                    <select class="form-select rounded-3" id="categoria" th:field="*{categoria}">
+                                        <option value="">-- Seleccione --</option>
+                                        <option th:each="cat : ${categorias}" 
+                                                th:value="${cat.idCategoria}" 
+                                                th:text="${cat.descripcion}">
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="unidad" class="form-label fw-bold">Unidad de Medida</label>
+                                    <select class="form-select rounded-3" id="unidad" th:field="*{unidadMedida}">
+                                        <option value="">-- Seleccione --</option>
+                                        <option th:each="uni : ${unidades}" 
+                                                th:value="${uni.idUNM}" 
+                                                th:text="${uni.valor}">
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -62,7 +103,7 @@
                                 <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">
                                     <i class="bi bi-save me-2"></i> Guardar Producto
                                 </button>
-                                <a href="/" class="btn btn-outline-secondary rounded-pill">Cancelar</a>
+                                <a href="/productos" class="btn btn-outline-secondary rounded-pill">Cancelar</a>
                             </div>
 
                         </form>
