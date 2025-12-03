@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow rounded-4 border-0">
+                    <div class="card-header bg-white border-bottom-0 pt-4 text-center">
+                        <h3 class="fw-bold" style="color: #2b2d3d;">Gestión Usuario</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <form th:action="@{/usuarios/guardar}" th:object="${usuarioForm}" method="post" novalidate>
+                            
+                            <input type="hidden" th:field="*{idUsuario}" />
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Usuario (Login)</label>
+                                    
+                                    <input type="text" class="form-control rounded-3" 
+                                           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''" 
+                                           th:field="*{username}" placeholder="ej: pepito">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Contraseña</label>
+                                    <input type="password" class="form-control rounded-3" 
+                                           th:classappend="${#fields.hasErrors('contrasena')} ? 'is-invalid' : ''" 
+                                           th:field="*{contrasena}">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nombre Completo</label>
+                                <input type="text" class="form-control rounded-3" 
+                                       th:classappend="${#fields.hasErrors('nombreCompleto')} ? 'is-invalid' : ''" 
+                                       th:field="*{nombreCompleto}">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreCompleto')}" th:errors="*{nombreCompleto}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control rounded-3" 
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" 
+                                       th:field="*{email}" placeholder="admin@tienda.com">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Rol</label>
+                                    <select class="form-select rounded-3" th:field="*{rol}">
+                                        <option value="2">Administrador</option>
+                                        <option value="3">Cliente Web</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Estado</label>
+                                    <select class="form-select rounded-3" th:field="*{estado}">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Bloqueado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">Guardar Usuario</button>
+                                <a href="/usuarios" class="btn btn-outline-secondary rounded-pill">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
