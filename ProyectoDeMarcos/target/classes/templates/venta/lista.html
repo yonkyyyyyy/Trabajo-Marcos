@@ -58,7 +58,7 @@
                         <tr th:each="venta : ${ventas}">
                             <td>#[[${venta.id}]]</td>
                             <td>[[${#temporals.format(venta.fechaVenta, 'dd/MM/yyyy')}]]</td>
-                            <td th:text="${venta.cliente?.razonSocial ?: 'Sin cliente'}"></td>
+                            <td th:text="${venta.cliente?.nombreRazonSocial ?: 'Sin cliente'}"></td>
                             <td class="text-end">S/ [[${#numbers.formatDecimal(venta.total, 1, 2)}]]</td>
                             <td>
                                 <span th:class="'badge bg-' + ${venta.estado.badgeColor}">

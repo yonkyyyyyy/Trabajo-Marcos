@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery - Florería RDM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .hero-delivery {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        .card-hover {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .zona-badge {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+        .price-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .map-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 60px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header según rol -->
+    <div sec:authorize="hasRole('ADMIN')">
+        <div th:replace="~{fragments/header-admin :: header-admin}"></div>
+    </div>
+    <div sec:authorize="hasRole('VENDEDOR')">
+        <div th:replace="~{fragments/header-vendedor :: header-vendedor}"></div>
+    </div>
+    <div sec:authorize="hasRole('COMPRADOR')">
+        <div th:replace="~{fragments/header-comprador :: header-comprador}"></div>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2b2d3d;">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img style="height: 100px;" src="/img/logo_empresa.png" alt="Logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/productos">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="/delivery">Delivery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/cart">
+                            <i class="bi bi-cart3"></i> Carrito
+                        </a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-delivery">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-truck me-3"></i>Servicio de Delivery
+            </h1>
+            <p class="lead mb-4">Llevamos tus flores frescas a la puerta de tu hogar</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/productos" class="btn btn-light btn-lg">
+                    <i class="bi bi-shop me-2"></i>Ver Productos
+                </a>
+                <a href="tel:987654321" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-telephone me-2"></i>Llamar Ahora
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        
+        <!-- Horarios de Atención -->
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <div class="card shadow-sm card-hover">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>Horarios de Delivery
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5 class="text-primary">
+                                        <i class="bi bi-calendar-week me-2"></i>Lunes a Viernes
+                                    </h5>
+                                    <p class="mb-1 fw-bold fs-5">8:00 AM - 8:00 PM</p>
+                                    <small class="text-muted">Entregas cada 2 horas</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5 class="text-success">
+                                        <i class="bi bi-calendar-check me-2"></i>Sábados
+                                    </h5>
+                                    <p class="mb-1 fw-bold fs-5">9:00 AM - 6:00 PM</p>
+                                    <small class="text-muted">Entregas cada 2 horas</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5 class="text-warning">
+                                        <i class="bi bi-calendar-day me-2"></i>Domingos
+                                    </h5>
+                                    <p class="mb-1 fw-bold fs-5">9:00 AM - 2:00 PM</p>
+                                    <small class="text-muted">Solo pedidos previos</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-danger text-white">
+                                    <h5>
+                                        <i class="bi bi-x-circle me-2"></i>Feriados
+                                    </h5>
+                                    <p class="mb-1 fw-bold fs-5">Horario Especial</p>
+                                    <small>Consultar disponibilidad</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-4 mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Nota:</strong> Para entregas en el mismo día, realiza tu pedido antes de las 12:00 PM
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm card-hover">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2 me-2"></i>Tiempo de Entrega
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h6 class="fw-bold">Entrega Express</h6>
+                                <p class="mb-0 text-muted">2-4 horas</p>
+                                <small class="text-success">+S/ 10.00</small>
+                            </div>
+                            <div class="timeline-item">
+                                <h6 class="fw-bold">Entrega Estándar</h6>
+                                <p class="mb-0 text-muted">4-8 horas</p>
+                                <small class="text-primary">Incluido</small>
+                            </div>
+                            <div class="timeline-item">
+                                <h6 class="fw-bold">Entrega Programada</h6>
+                                <p class="mb-0 text-muted">Día siguiente</p>
+                                <small class="text-primary">Gratis</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm card-hover mt-3">
+                    <div class="card-body text-center">
+                        <i class="bi bi-headset fs-1 text-primary mb-3"></i>
+                        <h5>¿Necesitas ayuda?</h5>
+                        <p class="text-muted mb-3">Contáctanos para consultas sobre tu pedido</p>
+                        <a href="tel:987654321" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-telephone me-2"></i>987 654 321
+                        </a>
+                        <a href="https://wa.me/51987654321" class="btn btn-success w-100" target="_blank">
+                            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zonas de Cobertura -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-geo-alt me-2"></i>Zonas de Cobertura y Tarifas
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Zona 1 -->
+                            <div class="col-md-3">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">Zona 1 - Centro</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="price-tag mb-3">
+                                            <div class="fs-5 mb-1">Delivery</div>
+                                            <div class="display-6 fw-bold">GRATIS</div>
+                                            <div class="small">Compras mayores a S/ 50</div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Distritos:</h6>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="bi bi-check-circle text-success me-1"></i>Miraflores</li>
+                                            <li><i class="bi bi-check-circle text-success me-1"></i>San Isidro</li>
+                                            <li><i class="bi bi-check-circle text-success me-1"></i>Lince</li>
+                                            <li><i class="bi bi-check-circle text-success me-1"></i>Jesús María</li>
+                                            <li><i class="bi bi-check-circle text-success me-1"></i>Magdalena</li>
+                                        </ul>
+                                        <span class="badge bg-success zona-badge w-100 mt-2">
+                                            <i class="bi bi-clock me-1"></i>2-4 horas
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zona 2 -->
+                            <div class="col-md-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">Zona 2 - Cercana</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="price-tag mb-3">
+                                            <div class="fs-5 mb-1">Delivery</div>
+                                            <div class="display-6 fw-bold">S/ 5.00</div>
+                                            <div class="small">Gratis desde S/ 80</div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Distritos:</h6>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="bi bi-check-circle text-primary me-1"></i>Surco</li>
+                                            <li><i class="bi bi-check-circle text-primary me-1"></i>San Borja</li>
+                                            <li><i class="bi bi-check-circle text-primary me-1"></i>La Molina</li>
+                                            <li><i class="bi bi-check-circle text-primary me-1"></i>Pueblo Libre</li>
+                                            <li><i class="bi bi-check-circle text-primary me-1"></i>Barranco</li>
+                                        </ul>
+                                        <span class="badge bg-primary zona-badge w-100 mt-2">
+                                            <i class="bi bi-clock me-1"></i>3-5 horas
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zona 3 -->
+                            <div class="col-md-3">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning">
+                                        <h6 class="mb-0">Zona 3 - Extendida</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="price-tag mb-3">
+                                            <div class="fs-5 mb-1">Delivery</div>
+                                            <div class="display-6 fw-bold">S/ 10.00</div>
+                                            <div class="small">Gratis desde S/ 120</div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Distritos:</h6>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="bi bi-check-circle text-warning me-1"></i>Los Olivos</li>
+                                            <li><i class="bi bi-check-circle text-warning me-1"></i>San Miguel</li>
+                                            <li><i class="bi bi-check-circle text-warning me-1"></i>Chorrillos</li>
+                                            <li><i class="bi bi-check-circle text-warning me-1"></i>Villa El Salvador</li>
+                                            <li><i class="bi bi-check-circle text-warning me-1"></i>Ate</li>
+                                        </ul>
+                                        <span class="badge bg-warning zona-badge w-100 mt-2">
+                                            <i class="bi bi-clock me-1"></i>4-6 horas
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zona 4 -->
+                            <div class="col-md-3">
+                                <div class="card h-100 border-danger">
+                                    <div class="card-header bg-danger text-white">
+                                        <h6 class="mb-0">Zona 4 - Especial</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="price-tag mb-3">
+                                            <div class="fs-5 mb-1">Delivery</div>
+                                            <div class="display-6 fw-bold">S/ 15.00</div>
+                                            <div class="small">Consultar disponibilidad</div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Distritos:</h6>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="bi bi-check-circle text-danger me-1"></i>Callao</li>
+                                            <li><i class="bi bi-check-circle text-danger me-1"></i>Ventanilla</li>
+                                            <li><i class="bi bi-check-circle text-danger me-1"></i>Comas</li>
+                                            <li><i class="bi bi-check-circle text-danger me-1"></i>San Juan Lurig.</li>
+                                            <li><i class="bi bi-check-circle text-danger me-1"></i>Otros distritos</li>
+                                        </ul>
+                                        <span class="badge bg-danger zona-badge w-100 mt-2">
+                                            <i class="bi bi-clock me-1"></i>6-8 horas
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mt-4 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Importante:</strong> Los tiempos de entrega pueden variar según el tráfico y condiciones climáticas. 
+                            Para zonas no listadas, consulta disponibilidad llamando al 987 654 321
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proceso de Delivery -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-diagram-3 me-2"></i>¿Cómo funciona nuestro delivery?
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4 text-center">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px;">
+                                        <i class="bi bi-cart-plus fs-1"></i>
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold">1. Haz tu pedido</h5>
+                                <p class="text-muted small">Selecciona tus flores favoritas y completa tu orden en nuestra tienda online</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px;">
+                                        <i class="bi bi-check-circle fs-1"></i>
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold">2. Confirmación</h5>
+                                <p class="text-muted small">Recibirás un mensaje confirmando tu pedido y tiempo estimado de entrega</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px;">
+                                        <i class="bi bi-box-seam fs-1"></i>
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold">3. Preparación</h5>
+                                <p class="text-muted small">Nuestro equipo prepara tu pedido con el mayor cuidado y frescura</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px;">
+                                        <i class="bi bi-truck fs-1"></i>
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold">4. Entrega</h5>
+                                <p class="text-muted small">¡Tu pedido llega fresco a la puerta de tu hogar!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Políticas de Delivery -->
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield-check me-2"></i>Políticas de Entrega
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Garantía de frescura:</strong> Flores 100% frescas o reembolso completo
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Seguimiento:</strong> Rastrea tu pedido en tiempo real
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Contacto directo:</strong> Comunicación con el repartidor
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Reprogramación:</strong> Cambia la fecha de entrega sin costo
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Entregas anónimas:</strong> Disponible para sorpresas especiales
+                            </li>
+                            <li class="mb-0">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Tarjetas personalizadas:</strong> Incluye tu mensaje sin costo adicional
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-question-circle me-2"></i>Preguntas Frecuentes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        ¿Puedo cambiar la dirección de entrega?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Sí, puedes cambiarla hasta 2 horas antes de la entrega. Contáctanos al 987 654 321.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        ¿Entregan en días feriados?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Sí, tenemos horarios especiales. Consulta disponibilidad con anticipación.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        ¿Qué pasa si no hay nadie en casa?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        El repartidor te contactará. Podemos dejarlo con un vecino o reprogramar la entrega.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                        ¿Hacen entregas fuera de Lima?
+                                    </button>
+                                </h2>
+                                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Sí, realizamos envíos nacionales. Contáctanos para cotizar tu pedido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Final -->
+        <div class="text-center py-5">
+            <h2 class="mb-4">¿Listo para hacer tu pedido?</h2>
+            <p class="lead mb-4">Explora nuestro catálogo y recibe tus flores frescas en casa</p>
+            <a href="/productos" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-shop me-2"></i>Ver Productos
+            </a>
+            <a href="/cart" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-cart3 me-2"></i>Ver Carrito
+            </a>
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

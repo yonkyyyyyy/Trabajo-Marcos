@@ -33,11 +33,11 @@ public class ClienteProveedorService {
     }
 
     public List<ClienteProveedor> findClientes() {
-        return repository.findByTipo("CLIENTE");
+        return repository.findByTipo("1");
     }
 
     public List<ClienteProveedor> findProveedores() {
-        return repository.findByTipo("PROVEEDOR");
+        return repository.findByTipo("2");
     }
 
     public long count() {

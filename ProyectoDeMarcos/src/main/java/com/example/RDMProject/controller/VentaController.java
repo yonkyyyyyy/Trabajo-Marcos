@@ -3,232 +3,284 @@ package com.example.RDMProject.controller;
 import com.example.RDMProject.model.*;
 import com.example.RDMProject.model.enums.EstadoPedido;
 import com.example.RDMProject.service.*;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 @RequestMapping("/ventas")
-@PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COMPRADOR')")
 public class VentaController {
 
     @Autowired
     private VentaService ventaService;
-    
+
     @Autowired
-    private UsuarioService usuarioService;
-    
-    @Autowired
-    private ClienteProveedorService clienteService;
-    
+    private ClienteProveedorService clienteProveedorService;
+
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+    // Listar ventas (ADMIN y VENDEDOR)
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
-    public String listar(@RequestParam(required = false) EstadoPedido estado, Model model) {
-        List<Venta> ventas;
-        
-        if (estado != null) {
-            ventas = ventaService.findByEstado(estado);
-            model.addAttribute("estadoFiltro", estado);
-        } else {
-            ventas = ventaService.findAll();
-        }
-        
-        model.addAttribute("ventas", ventas);
-        model.addAttribute("estados", EstadoPedido.values());
-        model.addAttribute("ventasPendientes", ventaService.countPendientes());
-        
-        return "venta/lista";
-    }
-
-    @GetMapping("/pendientes")
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
-    public String pendientes(Model model) {
-        List<Venta> pendientes = ventaService.findPendientes();
-        model.addAttribute("ventas", pendientes);
-        model.addAttribute("total", pendientes.size());
-        return "venta/lista";
-    }
-
-    @GetMapping("/nueva")
-    public String nueva(Model model, Authentication authentication) {
-        Venta venta = new Venta();
-        
-        String username = authentication.getName();
-        Usuario usuario = usuarioService.findByUsername(username).orElse(null);
-        venta.setUsuario(usuario);
-        
-        model.addAttribute("venta", venta);
-        model.addAttribute("clientes", clienteService.findAll());
-        model.addAttribute("productos", productoService.listarProductos());
-        model.addAttribute("estados", EstadoPedido.values());
-        
-        return "venta/form";
-    }
-
-    @GetMapping("/{id}")
-    public String detalle(@PathVariable Long id, Model model, Authentication authentication) {
-        Venta venta = ventaService.findById(id);
-        
-        if (venta == null) {
-            return "redirect:/ventas";
-        }
-        
-        String username = authentication.getName();
-        Usuario usuarioActual = usuarioService.findByUsername(username).orElse(null);
-        
-        if (usuarioActual != null) {
-            String rol = usuarioActual.getRol();
-            
-            if (rol.equals("ROLE_COMPRADOR")) {
-                if (!venta.getUsuario().equals(usuarioActual)) {
-                    return "redirect:/acceso-denegado";
-                }
-            }
-        }
-        
-        model.addAttribute("venta", venta);
-        model.addAttribute("puedeModificar", venta.puedeModificar(usuarioActual));
-        model.addAttribute("estados", EstadoPedido.values());
-        
-        return "venta/detalle";
-    }
-
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model, Authentication authentication) {
-        Venta venta = ventaService.findById(id);
-        
-        if (venta == null) {
-            return "redirect:/ventas";
-        }
-        
-        String username = authentication.getName();
-        Usuario usuarioActual = usuarioService.findByUsername(username).orElse(null);
-        
-        if (!venta.puedeModificar(usuarioActual)) {
-            return "redirect:/ventas/" + id + "?error=No se puede modificar esta venta";
-        }
-        
-        model.addAttribute("venta", venta);
-        model.addAttribute("clientes", clienteService.findAll());
-        model.addAttribute("productos", productoService.listarProductos());
-        model.addAttribute("estados", EstadoPedido.values());
-        
-        return "venta/form";
-    }
-
-    @PostMapping("/guardar")
-    public String guardar(
-            @Valid @ModelAttribute("venta") Venta venta,
-            BindingResult result,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes,
+    public String listar(
+            @RequestParam(required = false) String estado,
             Model model
     ) {
-        if (result.hasErrors()) {
-            model.addAttribute("clientes", clienteService.findAll());
-            model.addAttribute("productos", productoService.listarProductos());
-            return "venta/form";
-        }
-        
         try {
-            if (venta.getId() == null) {
-                String username = authentication.getName();
-                Usuario usuario = usuarioService.findByUsername(username).orElse(null);
+            List<Venta> ventas;
+
+            if (estado != null && !estado.isEmpty()) {
+                EstadoPedido estadoPedido = EstadoPedido.valueOf(estado);
+                ventas = ventaService.findByEstado(estadoPedido);
+            } else {
+                ventas = ventaService.findAll();
+            }
+
+            model.addAttribute("ventas", ventas);
+            model.addAttribute("estadoFiltro", estado);
+
+            return "venta/lista";
+
+        } catch (Exception e) {
+            System.err.println("Error al listar ventas: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("error", "Error al cargar las ventas");
+            return "venta/lista";
+        }
+    }
+
+    // Formulario nueva venta
+    @GetMapping("/nueva")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COMPRADOR')")
+    public String nuevaVenta(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            // Obtener usuario actual
+            Usuario usuario = usuarioService.buscarPorUsername(userDetails.getUsername());
+            if (usuario == null) {
+                redirectAttributes.addFlashAttribute("error", "Usuario no encontrado");
+                return "redirect:/login";
+            }
+
+            // Crear nueva venta
+            Venta venta = new Venta();
+            venta.setUsuario(usuario);
+            venta.setFechaVenta(LocalDate.now());
+            venta.setEstado(EstadoPedido.PENDIENTE);
+            venta.setDescuento(0.0);
+            venta.setSubtotal(0.0);
+            venta.setIgv(0.0);
+            venta.setTotal(0.0);
+
+            // Cargar datos para el formulario
+            List<ClienteProveedor> clientes = clienteProveedorService.findClientes();
+            List<Producto> productos = productoService.listarProductos();
+
+            model.addAttribute("venta", venta);
+            model.addAttribute("clientes", clientes);
+            model.addAttribute("productos", productos);
+
+            return "venta/form";
+
+        } catch (Exception e) {
+            System.err.println("Error al crear formulario de venta: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al cargar formulario");
+            return "redirect:/ventas";
+        }
+    }
+
+    // Guardar venta
+    @PostMapping("/guardar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COMPRADOR')")
+    public String guardarVenta(
+            @ModelAttribute Venta venta,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            System.out.println("=== GUARDAR VENTA - DEBUG ===");
+            System.out.println("Venta ID: " + venta.getId());
+            System.out.println("Cliente ID: " + (venta.getCliente() != null ? venta.getCliente().getId() : "NULL"));
+            System.out.println("Usuario ID: " + (venta.getUsuario() != null ? venta.getUsuario().getIdUsuario() : "NULL"));
+            System.out.println("Detalles count: " + (venta.getDetalles() != null ? venta.getDetalles().size() : "0"));
+
+            // Validaciones básicas
+            if (venta.getCliente() == null || venta.getCliente().getId() == null) {
+                redirectAttributes.addFlashAttribute("error", "Debe seleccionar un cliente");
+                return "redirect:/ventas/nueva";
+            }
+
+            if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Debe agregar al menos un producto");
+                return "redirect:/ventas/nueva";
+            }
+
+            // Obtener usuario actual si no viene en el objeto
+            if (venta.getUsuario() == null || venta.getUsuario().getIdUsuario() == null) {
+                Usuario usuario = usuarioService.buscarPorUsername(userDetails.getUsername());
                 venta.setUsuario(usuario);
+            }
+
+            // Cargar el cliente completo desde la BD
+            ClienteProveedor cliente = clienteProveedorService.findById(venta.getCliente().getId());
+            if (cliente == null) {
+                redirectAttributes.addFlashAttribute("error", "Cliente no encontrado");
+                return "redirect:/ventas/nueva";
+            }
+            venta.setCliente(cliente);
+
+            // Establecer valores por defecto si faltan
+            if (venta.getFechaVenta() == null) {
+                venta.setFechaVenta(LocalDate.now());
+            }
+
+            if (venta.getEstado() == null) {
                 venta.setEstado(EstadoPedido.PENDIENTE);
             }
-            
+
+            if (venta.getDescuento() == null) {
+                venta.setDescuento(0.0);
+            }
+
+            // Procesar detalles
+            for (DetalleVenta detalle : venta.getDetalles()) {
+                // Cargar producto completo
+                if (detalle.getProducto() != null && detalle.getProducto().getId() != null) {
+                    Producto producto = productoService.obtenerPorId(detalle.getProducto().getId());
+                    if (producto == null) {
+                        redirectAttributes.addFlashAttribute("error", "Producto no encontrado: " + detalle.getProducto().getId());
+                        return "redirect:/ventas/nueva";
+                    }
+
+                    detalle.setProducto(producto);
+
+                    // Establecer precio si no viene
+                    if (detalle.getPrecioUnitario() == null || detalle.getPrecioUnitario() == 0) {
+                        detalle.setPrecioUnitario(producto.getPrecio());
+                    }
+
+                    // Calcular subtotal del detalle
+                    if (detalle.getCantidad() != null && detalle.getPrecioUnitario() != null) {
+                        detalle.setSubtotal(detalle.getCantidad() * detalle.getPrecioUnitario());
+                    }
+
+                    // Asociar detalle con venta
+                    detalle.setVenta(venta);
+                }
+            }
+
+            // Calcular totales
+            venta.calcularTotal();
+
+            System.out.println("Subtotal: " + venta.getSubtotal());
+            System.out.println("IGV: " + venta.getIgv());
+            System.out.println("Total: " + venta.getTotal());
+
+            // Guardar venta
             Venta ventaGuardada = ventaService.save(venta);
-            
-            redirectAttributes.addFlashAttribute("mensaje", 
-                "Venta guardada exitosamente. Total: S/ " + ventaGuardada.getTotal());
+
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Venta #" + ventaGuardada.getId() + " guardada exitosamente");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
-            
-            return "redirect:/ventas/" + ventaGuardada.getId();
-            
+
+            return "redirect:/ventas";
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", 
-                "Error al guardar la venta: " + e.getMessage());
+            System.err.println("Error al guardar venta: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al guardar venta: " + e.getMessage());
             return "redirect:/ventas/nueva";
         }
     }
 
+    // Ver detalle
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
+    public String verDetalle(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Venta venta = ventaService.findById(id);
+            if (venta == null) {
+                redirectAttributes.addFlashAttribute("error", "Venta no encontrada");
+                return "redirect:/ventas";
+            }
+
+            model.addAttribute("venta", venta);
+            return "venta/detalle";
+
+        } catch (Exception e) {
+            System.err.println("Error al ver detalle: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al cargar venta");
+            return "redirect:/ventas";
+        }
+    }
+
+    // Cambiar estado
     @PostMapping("/{id}/cambiar-estado")
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public String cambiarEstado(
             @PathVariable Long id,
-            @RequestParam EstadoPedido nuevoEstado,
+            @RequestParam String nuevoEstado,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            Venta venta = ventaService.cambiarEstado(id, nuevoEstado);
-            
+            EstadoPedido estado = EstadoPedido.valueOf(nuevoEstado);
+            Venta venta = ventaService.cambiarEstado(id, estado);
+
             if (venta != null) {
-                redirectAttributes.addFlashAttribute("mensaje", 
-                    "Estado actualizado a: " + nuevoEstado.getDescripcion());
+                redirectAttributes.addFlashAttribute("mensaje", "Estado actualizado a " + estado);
                 redirectAttributes.addFlashAttribute("tipoMensaje", "success");
             } else {
-                redirectAttributes.addFlashAttribute("error", 
-                    "No se pudo cambiar el estado");
+                redirectAttributes.addFlashAttribute("error", "No se pudo cambiar el estado");
             }
-            
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", 
-                "Error al cambiar estado: " + e.getMessage());
+            System.err.println("Error al cambiar estado: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al cambiar estado");
         }
-        
-        return "redirect:/ventas/" + id;
+
+        return "redirect:/ventas";
     }
 
-    @PostMapping("/{id}/completar")
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
-    public String completar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        ventaService.marcarComoCompletada(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Venta marcada como completada");
-        return "redirect:/ventas/" + id;
-    }
-
-    @PostMapping("/{id}/entregar")
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
-    public String entregar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        ventaService.marcarComoEntregada(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Venta marcada como entregada");
-        return "redirect:/ventas/" + id;
-    }
-
-    @PostMapping("/{id}/cancelar")
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
-    public String cancelar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        ventaService.cancelar(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Venta cancelada");
-        redirectAttributes.addFlashAttribute("tipoMensaje", "warning");
-        return "redirect:/ventas/" + id;
-    }
-
+    // Eliminar venta
     @PostMapping("/{id}/eliminar")
     @PreAuthorize("hasRole('ADMIN')")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        boolean eliminada = ventaService.deleteById(id);
-        
-        if (eliminada) {
-            redirectAttributes.addFlashAttribute("mensaje", "Venta eliminada exitosamente");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
-        } else {
-            redirectAttributes.addFlashAttribute("error", 
-                "No se puede eliminar. Solo se pueden eliminar ventas PENDIENTES o CANCELADAS");
+        try {
+            boolean eliminado = ventaService.deleteById(id);
+
+            if (eliminado) {
+                redirectAttributes.addFlashAttribute("mensaje", "Venta eliminada exitosamente");
+                redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+            } else {
+                redirectAttributes.addFlashAttribute("error",
+                        "Solo se pueden eliminar ventas en estado PENDIENTE o CANCELADO");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al eliminar venta: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar venta");
         }
-        
+
         return "redirect:/ventas";
     }
 }

@@ -28,7 +28,7 @@
 
     <div class="card mt-4">
         <div class="card-body">
-            <p><strong>Cliente:</strong> [[${venta.cliente?.razonSocial ?: 'Sin cliente'}]]</p>
+            <p><strong>Cliente:</strong> [[${venta.cliente?.nombreRazonSocial?: 'Sin cliente'}]]</p>
             <p><strong>Fecha:</strong> [[${#temporals.format(venta.fechaVenta, 'dd/MM/yyyy')}]]</p>
             <p><strong>Total:</strong> S/ [[${#numbers.formatDecimal(venta.total, 1, 2)}]]</p>
 
