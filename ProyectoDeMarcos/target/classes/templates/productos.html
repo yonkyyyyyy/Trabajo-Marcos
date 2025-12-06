@@ -22,7 +22,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" href="/productos">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Nosotros</a></li>
-                    
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Administración
@@ -37,10 +37,16 @@
                             <li><a class="dropdown-item" href="/usuarios">Usuarios</a></li>
                         </ul>
                     </li>
-
+                    
                     <li class="nav-item mx-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link position-relative" href="/cart">
                             <i class="bi bi-cart3 fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                  style="font-size: 0.6rem;"
+                                  th:if="${cartCount > 0}" 
+                                  th:text="${cartCount}">
+                                0
+                            </span>
                         </a>
                     </li>
 
@@ -52,10 +58,17 @@
         </div>
     </nav>
 
+    <div class="container mt-3" th:if="${success != null}">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${success}">Producto agregado</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold" style="color: #2b2d3d;">Nuestro Catálogo</h2>
-            
             <a class="btn btn-primary text-white px-4 rounded-pill shadow-sm" href="/productos/nuevo">
                 <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
             </a>
@@ -70,7 +83,6 @@
                th:classappend="${categoriaActiva == null} ? 'btn-dark' : 'btn-outline-dark'">
                 Todos
             </a>
-
             <a th:each="cat : ${categorias}" 
                th:href="@{/productos(categoriaId=${cat.idCategoria})}"
                class="btn rounded-pill px-4"
@@ -94,28 +106,38 @@
                     <div class="position-relative">
                         <img th:src="${producto.imagen != null && producto.imagen != '' ? producto.imagen : 'https://placehold.co/300x350/png?text=Sin+Imagen'}" 
                              class="card-img-top rounded-top-4" alt="Producto" style="height: 250px; object-fit: cover;">
-                        <span class="position-absolute top-0 end-0 badge bg-danger m-3 rounded-pill">Oferta</span>
                     </div>
 
                     <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title fw-bold text-dark" th:text="${producto.nombre}">Nombre</h5>
-                        <p class="text-muted small" th:text="${producto.descripcion}">Descripción...</p>
+                        <h5 class="card-title fw-bold text-dark mb-1" th:text="${producto.nombre}">Nombre</h5>
+                        
+                        <div class="mb-2">
+                            <span class="badge rounded-pill" 
+                                  th:classappend="${producto.cantidad > 5} ? 'text-bg-success' : 'text-bg-danger'"
+                                  th:text="'Stock: ' + ${producto.cantidad}">
+                                Stock: 10
+                            </span>
+                        </div>
+
+                        <p class="text-muted small mb-2" th:text="${producto.descripcion}">Descripción...</p>
                         
                         <div class="mt-auto">
                             <h4 class="text-danger fw-bold mb-3" th:text="'S/ ' + ${producto.precio}">S/ 0.00</h4>
                             
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-outline-dark rounded-pill flex-grow-1 fw-bold">
-                                    <i class="bi bi-cart-plus me-2"></i> Añadir
-                                </a>
+                                <form th:action="@{/cart/add/{id}(id=${producto.id})}" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="cantidad" value="1" />
+                                    <button type="submit" class="btn btn-outline-dark rounded-pill w-100 fw-bold">
+                                        <i class="bi bi-cart-plus me-2"></i> Añadir
+                                    </button>
+                                </form>
                                 
                                 <a th:href="@{/productos/editar/{id}(id=${producto.id})}" class="btn btn-warning rounded-pill text-white" title="Editar">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
-
                                 <a th:href="@{/productos/eliminar/{id}(id=${producto.id})}" 
                                    class="btn btn-danger rounded-pill text-white" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este producto?');" 
+                                   onclick="return confirm('¿Estás seguro?');" 
                                    title="Eliminar">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>

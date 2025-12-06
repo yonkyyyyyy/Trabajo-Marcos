@@ -16,22 +16,25 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // Listar usuarios
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("usuarios", usuarioService.findAll());
         return "usuario/lista";
     }
 
-    // NUEVO: Aquí le ponemos el apodo "usuarioForm"
+    // Formulario Nuevo
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
-        model.addAttribute("usuarioForm", new Usuario()); 
+        // CAMBIO CLAVE: "userForm" para evitar choque de nombres
+        model.addAttribute("userForm", new Usuario());
         return "usuario/form";
     }
 
-    // GUARDAR: Recibimos el apodo "usuarioForm"
+    // Guardar Usuario
     @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("usuarioForm") Usuario usuario, BindingResult result, Model model) {
+    // CAMBIO CLAVE: Recibimos "userForm"
+    public String guardar(@Valid @ModelAttribute("userForm") Usuario usuario, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "usuario/form";
         }
@@ -39,13 +42,15 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
-    // EDITAR: También usamos el apodo aquí
+    // Editar Usuario
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("usuarioForm", usuarioService.findById(id));
+        // CAMBIO CLAVE: Usamos "userForm" también aquí
+        model.addAttribute("userForm", usuarioService.findById(id));
         return "usuario/form";
     }
 
+    // Eliminar Usuario
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
         usuarioService.deleteById(id);

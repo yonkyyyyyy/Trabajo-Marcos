@@ -4,6 +4,7 @@ import com.example.RDMProject.model.Producto;
 import com.example.RDMProject.service.ProductoService;
 import com.example.RDMProject.service.CategoriaService;
 import com.example.RDMProject.service.UnidadMedidaService;
+import com.example.RDMProject.service.VentaService; // Importante
 import com.example.RDMProject.repository.ProductoRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam; // Importante
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
@@ -32,6 +33,9 @@ public class ProductoController {
 
     @Autowired
     private UnidadMedidaService unidadMedidaService;
+
+    @Autowired
+    private VentaService ventaService; // Inyectado para contar el carrito
 
     // 1. Mostrar formulario (CON LISTAS)
     @GetMapping("/nuevo")
@@ -56,31 +60,30 @@ public class ProductoController {
         return "redirect:/productos"; 
     }
 
-    // 3. Mostrar Catálogo (CON FILTRO OPCIONAL)
+    // 3. Mostrar Catálogo (CON FILTRO Y CONTADOR CARRITO)
     @GetMapping("") 
     public String listarProductos(@RequestParam(required = false) Long categoriaId, Model model) {
         
         List<Producto> productos;
 
         if (categoriaId != null) {
-            // Lógica de filtrado
             var categoriaBuscada = categoriaService.findById(categoriaId).orElse(null);
             
             if (categoriaBuscada != null) {
                 productos = productoService.listarPorCategoria(categoriaBuscada);
-                model.addAttribute("categoriaActiva", categoriaId); // Para pintar el botón
+                model.addAttribute("categoriaActiva", categoriaId);
             } else {
                 productos = productoService.listarProductos();
             }
         } else {
-            // Si no hay filtro, mostrar todo
             productos = productoService.listarProductos();
         }
 
         model.addAttribute("listaProductos", productos);
-        
-        // Enviamos las categorías para pintar los botones de filtro
         model.addAttribute("categorias", categoriaService.findAll());
+        
+        // --- CONTADOR DEL CARRITO ---
+        model.addAttribute("cartCount", ventaService.contarItems());
         
         return "productos"; 
     }

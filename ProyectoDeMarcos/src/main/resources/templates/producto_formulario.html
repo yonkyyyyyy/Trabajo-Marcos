@@ -9,12 +9,44 @@
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark" style="background-color: #2b2d3d;">
+    <nav class="navbar navbar-expand-lg navbar-dark py-0" style="background-color: #2b2d3d;">
         <div class="container">
-            <a class="navbar-brand" href="/productos">
-                <i class="bi bi-arrow-left-circle me-2"></i> Volver al Catálogo
+            <a class="navbar-brand" href="/">
+                <img style="height: 130px; width: auto;" src="/img/logo_empresa.png" alt="Logo Florería RDM">
             </a>
-            <span class="navbar-text text-white">Panel de Administración</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/productos">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nosotros</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Administración
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><h6 class="dropdown-header">Inventario</h6></li>
+                            <li><a class="dropdown-item" href="/categorias">Categorías</a></li>
+                            <li><a class="dropdown-item" href="/unidades">Unidades de Medida</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Gestión</h6></li>
+                            <li><a class="dropdown-item" href="/clientes">Clientes</a></li>
+                            <li><a class="dropdown-item" href="/usuarios">Usuarios</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="#"><i class="bi bi-cart3 fs-5"></i></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -71,8 +103,8 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="categoria" class="form-label fw-bold">Categoría</label>
-                                    <select class="form-select rounded-3" id="categoria" th:field="*{categoria}">
+                                    <label for="categoriaSelect" class="form-label fw-bold">Categoría</label>
+                                    <select class="form-select rounded-3" id="categoriaSelect" th:field="*{categoria}">
                                         <option value="">-- Seleccione --</option>
                                         <option th:each="cat : ${categorias}" 
                                                 th:value="${cat.idCategoria}" 
@@ -82,8 +114,8 @@
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label for="unidad" class="form-label fw-bold">Unidad de Medida</label>
-                                    <select class="form-select rounded-3" id="unidad" th:field="*{unidadMedida}">
+                                    <label for="unidadSelect" class="form-label fw-bold">Unidad de Medida</label>
+                                    <select class="form-select rounded-3" id="unidadSelect" th:field="*{unidadMedida}">
                                         <option value="">-- Seleccione --</option>
                                         <option th:each="uni : ${unidades}" 
                                                 th:value="${uni.idUNM}" 
@@ -110,6 +142,33 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header border-bottom-0">
+                    <h1 class="modal-title fs-5 fw-bold">Iniciar Sesión</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-0">
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="nombre@ejemplo.com">
+                            <label for="floatingInput">Correo electrónico</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Contraseña">
+                            <label for="floatingPassword">Contraseña</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ingresar</button>
+                    </form>
+                </div>
+                <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+                    <button type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>

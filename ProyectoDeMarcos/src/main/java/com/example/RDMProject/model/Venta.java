@@ -1,127 +1,82 @@
 package com.example.RDMProject.model;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "venta")
 public class Venta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "fecha_venta")
     private LocalDate fechaVenta;
-    private Double total;
-    private Double descuento;
-    private Double igv;
-    private String observaciones;
 
+    private String observaciones;
+    private Double total;
+    private Double igv;
+    private Double descuento;
     private Integer numerador;
 
+    // Relaciones
     @ManyToOne
-    @JoinColumn(name = "idDocVentaCompra")
-    private SerieDocVentaCompra serieDocVentaCompra;
-
-    @ManyToOne
-    @JoinColumn(name = "idUsuario")
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "idCliente")
+    @JoinColumn(name = "id_cliente")
     private ClienteProveedor cliente;
 
+    // Opcional: Si tienes tabla de tipo de documento
+    // @ManyToOne
+    // @JoinColumn(name = "id_doc_venta_compra")
+    // private SerieDocVentaCompra documento;
+
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetalleVenta> detalles;
+    private List<DetalleVenta> detalles = new ArrayList<>();
 
-    public Venta(){
-
+    public Venta() {
+        this.fechaVenta = LocalDate.now();
+        this.total = 0.0;
     }
 
-    public Long getId() {
-        return id;
+    @PrePersist
+    public void prePersist() {
+        this.fechaVenta = LocalDate.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters y Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public LocalDate getFechaVenta() {
-        return fechaVenta;
-    }
+    public LocalDate getFechaVenta() { return fechaVenta; }
+    public void setFechaVenta(LocalDate fechaVenta) { this.fechaVenta = fechaVenta; }
 
-    public void setFechaVenta(LocalDate fechaVenta) {
-        this.fechaVenta = fechaVenta;
-    }
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 
-    public Double getTotal() {
-        return total;
-    }
+    public Double getTotal() { return total; }
+    public void setTotal(Double total) { this.total = total; }
 
-    public void setTotal(Double total) {
-        this.total = total;
-    }
+    public Double getIgv() { return igv; }
+    public void setIgv(Double igv) { this.igv = igv; }
 
-    public Double getDescuento() {
-        return descuento;
-    }
+    public Double getDescuento() { return descuento; }
+    public void setDescuento(Double descuento) { this.descuento = descuento; }
 
-    public void setDescuento(Double descuento) {
-        this.descuento = descuento;
-    }
+    public Integer getNumerador() { return numerador; }
+    public void setNumerador(Integer numerador) { this.numerador = numerador; }
 
-    public Double getIgv() {
-        return igv;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public void setIgv(Double igv) {
-        this.igv = igv;
-    }
+    public ClienteProveedor getCliente() { return cliente; }
+    public void setCliente(ClienteProveedor cliente) { this.cliente = cliente; }
 
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
-
-    public Integer getNumerador() {
-        return numerador;
-    }
-
-    public void setNumerador(Integer numerador) {
-        this.numerador = numerador;
-    }
-
-    public SerieDocVentaCompra getSerieDocVentaCompra() {
-        return serieDocVentaCompra;
-    }
-
-    public void setSerieDocVentaCompra(SerieDocVentaCompra serieDocVentaCompra) {
-        this.serieDocVentaCompra = serieDocVentaCompra;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public ClienteProveedor getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(ClienteProveedor cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<DetalleVenta> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<DetalleVenta> detalles) {
-        this.detalles = detalles;
-    }
+    public List<DetalleVenta> getDetalles() { return detalles; }
+    public void setDetalles(List<DetalleVenta> detalles) { this.detalles = detalles; }
 }
