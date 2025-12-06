@@ -32,13 +32,26 @@ public class Usuario {
     private LocalDate fechaSalida;
 
     @NotNull(message = "Debe seleccionar un rol")
-    private Integer rol; 
+    private String rol;
 
     private Integer estado;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_documento") 
     private TipoDocumento tipoDocumento;
+
+    @NotBlank(message = "El documento es obligatorio")
+    @Size(min = 8, max = 15, message = "El documento debe tener entre 8 y 15 caracteres")
+    @Column(name = "numero_documento")
+    private String numeroDocumento;
+
+    public String getNumeroDocumento() {
+        return numeroDocumento;
+    }
+
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
+    }
 
     public Usuario(){
         this.fechaIngreso = LocalDate.now();
@@ -68,8 +81,8 @@ public class Usuario {
     public LocalDate getFechaSalida() { return fechaSalida; }
     public void setFechaSalida(LocalDate fechaSalida) { this.fechaSalida = fechaSalida; }
 
-    public Integer getRol() { return rol; }
-    public void setRol(Integer rol) { this.rol = rol; }
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 
     public Integer getEstado() { return estado; }
     public void setEstado(Integer estado) { this.estado = estado; }

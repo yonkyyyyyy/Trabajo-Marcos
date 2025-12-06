@@ -31,11 +31,15 @@ public class ClienteProveedor {
 
     private String direccion;
 
-    private Integer tipo = 1; 
+    private String tipo;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_documento") 
     private TipoDocumento tipoDocumento;
+    @Column(name = "estado")
+    private Integer estado;
+
+
 
     public ClienteProveedor() {
     }
@@ -59,9 +63,13 @@ public class ClienteProveedor {
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public Integer getTipo() { return tipo; }
-    public void setTipo(Integer tipo) { this.tipo = tipo; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
     public TipoDocumento getTipoDocumento() { return tipoDocumento; }
     public void setTipoDocumento(TipoDocumento tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+
+    public Integer getEstado() {return estado;}
+
+    public void setEstado(Integer estado) {this.estado = estado;}
 }

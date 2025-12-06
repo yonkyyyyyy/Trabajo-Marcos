@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -7,205 +8,163 @@
     <title>Florería RDM - Inicio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark py-0" style="background-color: #2b2d3d;">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <img style="height: 130px; width: auto;" src="/img/logo_empresa.png" alt="Logo Florería RDM">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/productos">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Nosotros</a></li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Administración
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><h6 class="dropdown-header">Inventario</h6></li>
-                            <li><a class="dropdown-item" href="/categorias">Categorías</a></li>
-                            <li><a class="dropdown-item" href="/unidades">Unidades de Medida</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Gestión</h6></li>
-                            <li><a class="dropdown-item" href="/clientes">Clientes</a></li>
-                            <li><a class="dropdown-item" href="/usuarios">Usuarios</a></li>
-                        </ul>
-                    </li>
-                    
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-cart3 fs-5"></i>
-                        </a>
-                    </li>
+<!-- Header para usuarios NO autenticados (público) -->
+<div sec:authorize="isAnonymous()">
+    <div th:replace="~{fragments/header-public :: header-public}"></div>
+</div>
 
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                    </li>
-                </ul>
-            </div>
+<!-- Header para usuarios con rol COMPRADOR -->
+<div sec:authorize="hasRole('COMPRADOR')">
+    <div th:replace="~{fragments/header-comprador :: header-comprador}"></div>
+</div>
+
+<!-- Header para usuarios con rol VENDEDOR -->
+<div sec:authorize="hasRole('VENDEDOR')">
+    <div th:replace="~{fragments/header-vendedor :: header-vendedor}"></div>
+</div>
+
+<!-- Header para usuarios con rol ADMIN -->
+<div sec:authorize="hasRole('ADMIN')">
+    <div th:replace="~{fragments/header-admin :: header-admin}"></div>
+</div>
+
+<!-- Contenido Principal -->
+<div class="container mt-5">
+    <div class="row text-center">
+        <div class="col-12">
+            <h1 class="display-4">Recuerdo de mi Madre</h1>
+            <p class="lead">Gestión profesional de florería</p>
+          <p class="lead">En Recuerdo de mi Madre creemos en la fuerza de lo natural y en la belleza de las flores</p>
+          <p class="lead">como un símbolo eterno de vida, amor y bienestar.</p>
+          <p class="lead">
+            Con más de 20 años de experiencia en la venta de flores, en Recuerdo de mi Madre nos especializamos en crear arreglos florales que transmiten emociones y acompañan cada momento especial de tu vida.
+            Desde hace 5 años, ampliamos nuestra pasión por lo natural con la venta de medicina natural y plantas medicinales, brindando a nuestros clientes productos de calidad que promueven el bienestar y la salud de manera tradicional y confiable.
+          
+          </p>
+            <hr class="my-4">
         </div>
-    </nav>
+    </div>
 
-    <div class="container mt-5">
-        <div class="row text-center">
-            <div class="col-12">
-                <h1 class="display-4">Recuerdo de mi Madre</h1>
-                <p class="lead">Gestión profesional de florería</p>
-                <p class="lead">con más de 20 años de experiencia, <br>sirviéndote a ti.</p>
-                <hr class="my-4">
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-flower2 display-1 text-danger"></i>
-                        <h5 class="card-title mt-3">Ramos</h5>
-                        <p class="card-text">Variedad de flores frescas.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-flower2 display-1 text-danger"></i>
+                    <h5 class="card-title mt-3">Ramos</h5>
+                    <p class="card-text">Variedad de flores frescas.</p>
+                    <a href="/productos?categoria=ramos" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-gift display-1 text-warning"></i>
-                        <h5 class="card-title mt-3">Regalos</h5>
-                        <p class="card-text">Detalles para toda ocasión.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-gift display-1 text-warning"></i>
+                    <h5 class="card-title mt-3">Regalos</h5>
+                    <p class="card-text">Detalles para toda ocasión.</p>
+                    <a href="/productos?categoria=regalos" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-truck display-1 text-info"></i>
-                        <h5 class="card-title mt-3">Delivery</h5>
-                        <p class="card-text">Envíos a todo el país.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-truck display-1 text-info"></i>
+                    <h5 class="card-title mt-3">Delivery</h5>
+                    <p class="card-text">Envíos a todo el país.</p>
+                    <a href="/delivery" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <h2 class="text-center py-5"> PRODUCTOS DESTACADOS</h2>
-            
-            <div class="col-lg-9">
-                <div id="carouselProductos" class="carousel slide" data-bs-interval="false">
-                    
-                    <div class="carousel-inner p-2">
+<!-- Sección de Productos Destacados -->
+<div class="container py-5">
+    <div class="row align-items-center">
+        <h2 class="text-center py-5">PRODUCTOS DESTACADOS</h2>
 
-                        <div th:each="grupo, stat : ${productosAgrupados}" 
-                             class="carousel-item" 
-                             th:classappend="${stat.first} ? 'active'">
-                             
-                            <div class="row g-4">
-                                <div class="col-md-4" th:each="producto : ${grupo}">
-                                    <div class="card h-100 shadow-sm border-0 rounded-4">
-                                        <img th:src="${producto.imagen != null && producto.imagen != '' ? producto.imagen : 'https://placehold.co/300x350/png?text=Sin+Imagen'}" 
-                                             class="card-img-top rounded-top-4" alt="Imagen Producto" style="height: 300px; object-fit: cover;">
-                                        
-                                        <div class="card-body text-center d-flex flex-column">
-                                            <h5 class="card-title fw-bold fs-6" th:text="${producto.nombre}">Nombre</h5>
-                                            <p class="text-danger fw-bold my-1" th:text="'S/ ' + ${producto.precio}">S/ 0.00</p>
-                                            
-                                            <div class="d-flex justify-content-center align-items-center my-2">
-                                                <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">-</button>
-                                                <span class="mx-2 fw-bold small">1</span>
-                                                <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">+</button>
-                                            </div>
-                                            <a href="#" class="btn btn-sm btn-outline-danger rounded-pill w-100 mt-auto">Añadir</a>
+        <div class="col-lg-9">
+            <div id="carouselProductos" class="carousel slide" data-bs-interval="false">
+
+                <div class="carousel-inner p-2">
+
+                    <div th:each="grupo, stat : ${productosAgrupados}"
+                         class="carousel-item"
+                         th:classappend="${stat.first} ? 'active'">
+
+                        <div class="row g-4">
+                            <div class="col-md-4" th:each="producto : ${grupo}">
+                                <div class="card h-100 shadow-sm border-0 rounded-4">
+                                    <img th:src="${producto.imagen != null && producto.imagen != '' ? producto.imagen : 'https://placehold.co/300x350/png?text=Sin+Imagen'}"
+                                         class="card-img-top rounded-top-4" alt="Imagen Producto" style="height: 300px; object-fit: cover;">
+
+                                    <div class="card-body text-center d-flex flex-column">
+                                        <h5 class="card-title fw-bold fs-6" th:text="${producto.nombre}">Nombre</h5>
+                                        <p class="text-danger fw-bold my-1" th:text="'S/ ' + ${producto.precio}">S/ 0.00</p>
+
+                                        <div class="d-flex justify-content-center align-items-center my-2">
+                                            <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">-</button>
+                                            <span class="mx-2 fw-bold small">1</span>
+                                            <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">+</button>
                                         </div>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill w-100 mt-auto">Añadir</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="carousel-item active" th:if="${#lists.isEmpty(productosAgrupados)}">
-                            <div class="alert alert-warning text-center">
-                                No hay productos registrados en la base de datos todavía.
-                            </div>
-                        </div>
-
                     </div>
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductos" data-bs-slide="prev" style="width: 5%; margin-left: -20px;">
+                    <div class="carousel-item active" th:if="${#lists.isEmpty(productosAgrupados)}">
+                        <div class="alert alert-warning text-center">
+                            No hay productos registrados en la base de datos todavía.
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductos" data-bs-slide="prev" style="width: 5%; margin-left: -20px;">
                         <span class="bg-danger rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 30px; height: 30px;">
                             <span class="carousel-control-prev-icon" style="width: 15px; height: 15px;"></span>
                         </span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselProductos" data-bs-slide="next" style="width: 5%; margin-right: -20px;">
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselProductos" data-bs-slide="next" style="width: 5%; margin-right: -20px;">
                         <span class="bg-danger rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 30px; height: 30px;">
                             <span class="carousel-control-next-icon" style="width: 15px; height: 15px;"></span>
                         </span>
-                    </button>
-                </div>
+                </button>
             </div>
-
-            <div class="col-lg-3">
-                <div class="rounded-4 p-4 shadow-sm text-center d-flex align-items-center justify-content-center position-relative" style="background-color: #3b71ca; min-height: 400px;"> 
-                    <div>
-                        <h2 class="text-white display-5 fw-bold" style="font-family: serif;">lo mejor en<br>VENTAS</h2>
-                        <hr class="text-white opacity-100 mx-auto" style="width: 50px; border-width: 3px;">
-                        
-                        <a href="/productos" class="btn btn-light rounded-pill px-4 fw-bold mt-4 shadow-sm">
-                            Mas productos aqui!!
-                        </a>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
+        <div class="col-lg-3">
+            <div class="rounded-4 p-4 shadow-sm text-center d-flex align-items-center justify-content-center position-relative" style="background-color: #3b71ca; min-height: 400px;">
+                <div>
+                    <h2 class="text-white display-5 fw-bold" style="font-family: serif;">lo mejor en<br>VENTAS</h2>
+                    <hr class="text-white opacity-100 mx-auto" style="width: 50px; border-width: 3px;">
+
+                    <a href="/productos" class="btn btn-light rounded-pill px-4 fw-bold mt-4 shadow-sm">
+                        Mas productos aqui!!
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
+<div class="container py-5">
+<div class="ratio ratio-16x9">
+  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d18856.197743238827!2d-81.1130905!3d-5.0902175!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9049e726a352df93%3A0xc1f877b959c6fc0f!2sFlorer%C3%ADa%20%22Recuerdo%20de%20mi%20madre%22!5e1!3m2!1ses!2spe!4v1765031571842!5m2!1ses!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+</div>
 
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header border-bottom-0">
-                    <h1 class="modal-title fs-5 fw-bold">Iniciar Sesión</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body py-0">
-                    <form>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="nombre@ejemplo.com">
-                            <label for="floatingInput">Correo electrónico</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Contraseña">
-                            <label for="floatingPassword">Contraseña</label>
-                        </div>
-                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ingresar</button>
-                        <div class="text-center mt-3">
-                            <a href="#" class="text-muted small text-decoration-none">¿Olvidaste tu contraseña?</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-                    <hr class="my-1">
-                    <button type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container">
-            <p class="mb-0">&copy; 2025 RDM Project - Todos los derechos reservados</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

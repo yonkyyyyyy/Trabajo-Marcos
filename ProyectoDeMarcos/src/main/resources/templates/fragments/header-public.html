@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Header para Usuario Público (sin autenticar) -->
+<nav th:fragment="header-public" class="navbar navbar-expand-lg navbar-dark py-0" style="background-color: #2b2d3d;">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img style="height: 100px; width: auto;" src="/img/logo_empresa.png" alt="Logo Florería RDM">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/productos">Productos</a></li>
+                <!--<li class="nav-item"><a class="nav-link" href="/nosotros">Nosotros</a></li>-->
+                <!-- Botón de Login -->
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="/login">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    </a>
+                </li>
+
+                <!-- Carrito de Compras -->
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="/cart">
+                        <i class="bi bi-cart3 fs-5"></i>
+                    </a>
+                </li>
+
+                
+
+                <!-- Botón de Registro
+                <li class="nav-item">
+                    <a class="nav-link btn btn-light btn-sm px-3 ms-2" href="/register">
+                        <i class="bi bi-person-plus me-1"></i>Registro
+                    </a>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Compras - Florería RDM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    
+    <div sec:authorize="hasRole('ADMIN')">
+        <div th:replace="~{fragments/header-admin :: header-admin}"></div>
+    </div>
+    <div sec:authorize="hasRole('VENDEDOR')">
+        <div th:replace="~{fragments/header-vendedor :: header-vendedor}"></div>
+    </div>
+
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                <li class="breadcrumb-item active">Compras</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-cart-check text-success me-2"></i>Gestión de Compras</h2>
+            <a href="/compras/nueva" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i>Nueva Compra
+            </a>
+        </div>
+
+        <div th:if="${mensaje}" class="alert alert-dismissible fade show" 
+             th:classappend="${tipoMensaje != null ? 'alert-' + tipoMensaje : 'alert-success'}">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${mensaje}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Filtro por Estado -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="/compras" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Filtrar por Estado</label>
+                        <select name="estado" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todos los estados</option>
+                            <option th:each="est : ${estados}" 
+                                    th:value="${est.name()}" 
+                                    th:text="${est.descripcion}"
+                                    th:selected="${estadoFiltro != null && estadoFiltro == est.name()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-8 d-flex align-items-end">
+                        <a href="/compras" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de Compras -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Proveedor</th>
+                                <th>Usuario</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(compras)}">
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay compras registradas
+                                </td>
+                            </tr>
+                            <tr th:each="compra : ${compras}">
+                                <td><strong>#[[${compra.id}]]</strong></td>
+                                <td>
+                                    <i class="bi bi-calendar3 text-muted"></i>
+                                    [[${#temporals.format(compra.fechaCompra, 'dd/MM/yyyy')}]]
+                                </td>
+                                <td>
+                                    <span th:if="${compra.proveedor != null}" 
+                                          th:text="${compra.proveedor.razonSocial}"></span>
+                                    <span th:if="${compra.proveedor == null}" class="text-muted">Sin proveedor</span>
+                                </td>
+                                <td>
+                                    <i class="bi bi-person text-muted"></i>
+                                    [[${compra.usuario?.nombreCompleto ?: 'N/A'}]]
+                                </td>
+                                <td class="text-end">
+                                    <strong class="text-success">
+                                        S/ [[${#numbers.formatDecimal(compra.total, 1, 2)}]]
+                                    </strong>
+                                </td>
+                                <td class="text-center">
+                                    <span th:if="${compra.estado != null}" 
+                                          th:class="'badge bg-' + ${compra.estado.badgeColor}">
+                                        [[${compra.estado.descripcion}]]
+                                    </span>
+                                    <span th:if="${compra.estado == null}" class="badge bg-secondary">
+                                        Sin estado
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{/compras/{id}(id=${compra.id})}" 
+                                           class="btn btn-outline-primary" 
+                                           title="Ver detalle">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/compras/editar/{id}(id=${compra.id})}" 
+                                           class="btn btn-outline-secondary" 
+                                           title="Editar"
+                                           th:if="${compra.estado?.name() == 'PENDIENTE'}">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-outline-danger" 
+                                                title="Eliminar"
+                                                sec:authorize="hasRole('ADMIN')"
+                                                th:if="${compra.estado?.name() == 'PENDIENTE' or compra.estado?.name() == 'CANCELADO'}"
+                                                onclick="confirmarEliminar([[${compra.id}]])">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="row mt-4" th:if="${!#lists.isEmpty(compras)}">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted">Total de Compras</h6>
+                        <h3 class="text-primary">[[${#lists.size(compras)}]]</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted">Monto Total</h6>
+                        <h3 class="text-success">
+                            S/ [[${#numbers.formatDecimal(#aggregates.sum(compras.![total]), 1, 2)}]]
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted">Compras Hoy</h6>
+                        <h3 class="text-info">
+                            [[${#lists.size(#lists.select(compras, c -> c.fechaCompra == T(java.time.LocalDate).now()))}]]
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar esta compra?</p>
+                    <p class="text-danger"><strong>Esta acción no se puede deshacer.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="formEliminar" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmarEliminar(id) {
+            const form = document.getElementById('formEliminar');
+            form.action = '/compras/' + id + '/eliminar';
+            const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

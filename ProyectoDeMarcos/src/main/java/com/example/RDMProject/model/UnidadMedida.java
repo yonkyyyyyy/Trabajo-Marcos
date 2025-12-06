@@ -14,6 +14,7 @@ public class UnidadMedida {
 
     @NotBlank(message = "El nombre de la unidad es obligatorio")
     private String valor;
+    private String descripcion;
 
     // Relación bidireccional
     @OneToMany(mappedBy = "unidadMedida", cascade = CascadeType.ALL, orphanRemoval = false)
@@ -24,6 +25,14 @@ public class UnidadMedida {
 
     public String getValor() { return valor; }
     public void setValor(String valor) { this.valor = valor; }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
     public List<Producto> getProductos() { return productos; }
     public void setProductos(List<Producto> productos) { this.productos = productos; }

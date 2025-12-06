@@ -1,5 +1,6 @@
 package com.example.RDMProject.controller;
 
+import com.example.RDMProject.model.Categoria;
 import com.example.RDMProject.model.Producto;
 import com.example.RDMProject.service.ProductoService;
 import com.example.RDMProject.service.CategoriaService;
@@ -11,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -83,7 +87,7 @@ public class ProductoController {
         model.addAttribute("categorias", categoriaService.findAll());
         
         // --- CONTADOR DEL CARRITO ---
-        model.addAttribute("cartCount", ventaService.contarItems());
+        model.addAttribute("cartCount",5); //ventaService.contarItems());
         
         return "productos"; 
     }
@@ -103,5 +107,37 @@ public class ProductoController {
     public String eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
         return "redirect:/productos";
+    }
+
+    @PostMapping
+    public String guardar(@ModelAttribute Producto producto, @RequestParam("archivoImagen") MultipartFile archivo)
+    {
+        if(producto.getCategoria()!=null && producto.getCategoria().getIdCategoria()!=null)
+        {
+            Categoria categoria=categoriaService.findById(producto.getCategoria().getIdCategoria())
+                    .orElseThrow(()->new IllegalArgumentException("Categoria no encontrada con el id:"+producto.getCategoria().getIdCategoria()));
+            producto.setCategoria(categoria);
+        }
+        if(!archivo.isEmpty())
+        {
+            String carpeta="uploads/";
+            Path ruta= Paths.get(carpeta);
+            try {
+                if(!Files.exists(ruta))
+                {
+                    Files.createDirectory(ruta);
+                }
+                String nombreArchivo=Paths.get(archivo.getOriginalFilename()).getFileName().toString();
+                Path destino=ruta.resolve(nombreArchivo);
+                Files.copy(archivo.getInputStream(),destino, StandardCopyOption.REPLACE_EXISTING);
+                producto.setImagen(nombreArchivo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        productoService.guardarProducto(producto);
+        //productoService.save(producto);
+        return"redirect:/productos";
     }
 }
