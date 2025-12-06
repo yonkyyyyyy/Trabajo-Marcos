@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                         // Rutas para usuarios autenticados (cualquier rol)
                         .requestMatchers(
-                                "/perfil/**",
+                                "/miperfil/**",
                                 "/cart/**",
                                 "/mis-pedidos/**"
                         ).authenticated()

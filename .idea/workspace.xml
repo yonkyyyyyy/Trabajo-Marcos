@@ -5,42 +5,122 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b20ab6f7-9bda-46a5-b14c-25f10bebbe4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos.zip" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/ConfiguracionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/MisPedidosController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/ProfileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/dto/AuthRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/enums/EstadoPedido.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/security/JwtFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/JwtService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/acceso-denegado.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/auth/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/auth/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/compra/compra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/compra/lista.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/configuracion/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/error/acceso-denegado.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/fragments/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/fragments/header-admin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/fragments/header-comprador.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/fragments/header-public.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/fragments/header-vendedor.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/mis-pedidos/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/perfil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/venta/detalle.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/venta/lista.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/venta/venta.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/WebConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/config/SecurityConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/AuthController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ConfiguracionController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/MisPedidosController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ProfileController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/dto/AuthRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/enums/EstadoPedido.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/security/JwtFilter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/CustomUserDetailsService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/JwtService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/acceso-denegado.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/auth/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/auth/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/compra/compra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/compra/lista.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/configuracion/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/error/acceso-denegado.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/fragments/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/fragments/header-admin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/fragments/header-comprador.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/fragments/header-public.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/fragments/header-vendedor.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/mis-pedidos/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/perfil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/venta/detalle.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/venta/lista.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/venta/venta.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/uploads/girasoles.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/uploads/primavera.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProyectoDeMarcos/uploads/tulipanes.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/CategoriaController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/CategoriaController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/CompraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/CompraController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/ProductoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/ProductoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/VentaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/controller/VentaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/ClienteProveedor.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/ClienteProveedor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Compra.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Compra.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/UnidadMedida.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/UnidadMedida.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Usuario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Venta.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/model/Venta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/ClienteProveedorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/ClienteProveedorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/CompraRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/CompraRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/UsuarioRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/UsuarioRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/VentaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/repository/VentaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/ClienteProveedorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/ClienteProveedorService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/CompraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/CompraService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/UsuarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/UsuarioService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/VentaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/java/com/example/RDMProject/service/VentaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/categoria/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/categoria/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/cliente/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/cliente/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/producto_formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/producto_formulario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/productos.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/productos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/unidadmedida/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/unidadmedida/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/usuario/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/src/main/resources/templates/usuario/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ClienteProveedorController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ClienteProveedorController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/CompraController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/CompraController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/DetalleCompraController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/DetalleCompraController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/DetalleVentaController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/DetalleVentaController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ProductoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/ProductoController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/SerieDocVentaCompraController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/SerieDocVentaCompraController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/UnidadMedidaController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/UnidadMedidaController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/UsuarioController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/UsuarioController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/VentaController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/controller/VentaController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Categoria.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Categoria.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/ClienteProveedor.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/ClienteProveedor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Compra.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Compra.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/DetalleVenta.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/DetalleVenta.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Producto.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Producto.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/UnidadMedida.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/UnidadMedida.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Usuario.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Usuario.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Venta.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/model/Venta.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/CategoriaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/CategoriaRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/ClienteProveedorRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/ClienteProveedorRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/CompraRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/CompraRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/DetalleCompraRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/DetalleCompraRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/DetalleVentaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/DetalleVentaRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/ProductoRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/ProductoRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/UnidadMedidaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/UnidadMedidaRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/UsuarioRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/UsuarioRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/VentaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/repository/VentaRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/CategoriaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/CategoriaService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/ClienteProveedorService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/ClienteProveedorService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/CompraService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/CompraService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/ProductoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/ProductoService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/UnidadMedidaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/UnidadMedidaService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/UsuarioService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/UsuarioService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/VentaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/com/example/RDMProject/service/VentaService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/categoria/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/categoria/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/cliente/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/cliente/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/producto_formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/producto_formulario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/productos.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/productos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/unidadmedida/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/unidadmedida/lista.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/usuario/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/ProyectoDeMarcos/target/classes/templates/usuario/lista.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -32,7 +32,7 @@ public class ProfileController {
         }
         
         model.addAttribute("usuario", usuario);
-        return "perfil";
+        return "miperfil";
     }
 
     @PostMapping("/actualizar")
