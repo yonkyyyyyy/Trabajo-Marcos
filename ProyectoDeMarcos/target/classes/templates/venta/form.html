@@ -51,23 +51,42 @@
 
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">
-                <i class="bi bi-person-circle me-2"></i>Información del Cliente
+                <i class="bi bi-person-circle me-2"></i>Información del Cliente y Documento
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Cliente *</label>
-                        <select class="form-select" th:field="*{cliente.id}" required>
-                            <option value="">Seleccionar cliente...</option>
-                            <option th:each="cliente : ${clientes}"
-                                    th:value="${cliente.id}"
-                                    th:text="${cliente.nombreRazonSocial}">
+                    <!-- Tipo de Documento de Venta -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Tipo de Documento *</label>
+                        <select class="form-select" th:field="*{documento.idDocVentaCompra}"
+                                id="selectDocumento" required onchange="actualizarNumerador()">
+                            <option value="">Seleccionar documento...</option>
+                            <option th:each="doc : ${seriesDocumento}"
+                                    th:value="${doc.idDocVentaCompra}"
+                                    th:text="${doc.serie + ' - ' + (doc.tipoDocVenta != null ? doc.tipoDocVenta.descripcion : 'Sin tipo')}">
                             </option>
                         </select>
                     </div>
+                    <!-- Correlativo/Numerador -->
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label fw-bold">Correlativo</label>
+                        <input type="text" class="form-control" id="correlativoPreview" readonly
+                               placeholder="Automático">
+                    </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Fecha</label>
-                        <input type="date" class="form-control" th:field="*{fechaVenta}" readonly>
+                        <label class="form-label">Cliente *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="buscarDocumentoCliente"
+                                   placeholder="Buscar por N° documento..." onkeyup="buscarCliente()">
+                            <select class="form-select" th:field="*{cliente.id}" id="selectCliente" required>
+                                <option value="">Seleccionar cliente...</option>
+                                <option th:each="cliente : ${clientes}"
+                                        th:value="${cliente.id}"
+                                        th:data-documento="${cliente.numeroDocumento}"
+                                        th:text="${cliente.nombreRazonSocial + ' - ' + cliente.numeroDocumento}">
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -297,7 +316,72 @@
     // Inicializar
     document.addEventListener('DOMContentLoaded', function() {
         calcularTotal();
+        // Si hay un documento seleccionado, actualizar el numerador
+        if (document.getElementById('selectDocumento').value) {
+            actualizarNumerador();
+        }
     });
+
+    // Actualizar numerador al cambiar el tipo de documento
+    function actualizarNumerador() {
+        const select = document.getElementById('selectDocumento');
+        const idDoc = select.value;
+        const correlativoPreview = document.getElementById('correlativoPreview');
+
+        if (!idDoc) {
+            correlativoPreview.value = '';
+            return;
+        }
+
+        fetch('/ventas/api/siguiente-numerador/' + idDoc)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    correlativoPreview.value = data.correlativo;
+                } else {
+                    correlativoPreview.value = 'Error';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                correlativoPreview.value = 'Error';
+            });
+    }
+
+    // Buscar cliente por número de documento
+    function buscarCliente() {
+        const input = document.getElementById('buscarDocumentoCliente');
+        const select = document.getElementById('selectCliente');
+        const busqueda = input.value.toLowerCase().trim();
+
+        if (busqueda.length < 2) {
+            // Mostrar todas las opciones
+            for (let option of select.options) {
+                option.style.display = '';
+            }
+            return;
+        }
+
+        for (let option of select.options) {
+            if (option.value === '') {
+                option.style.display = '';
+                continue;
+            }
+
+            const documento = option.getAttribute('data-documento') || '';
+            const texto = option.text.toLowerCase();
+
+            if (documento.includes(busqueda) || texto.includes(busqueda)) {
+                option.style.display = '';
+                // Seleccionar automáticamente si hay coincidencia exacta de documento
+                if (documento === busqueda) {
+                    select.value = option.value;
+                }
+            } else {
+                option.style.display = 'none';
+            }
+        }
+    }
 </script>
 </body>
 </html>

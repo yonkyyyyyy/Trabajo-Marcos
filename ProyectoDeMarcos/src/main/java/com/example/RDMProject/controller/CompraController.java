@@ -31,6 +31,9 @@ public class CompraController {
 
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private SerieDocVentaCompraService serieDocService;
 
     // Listar compras
     @GetMapping
@@ -135,10 +138,12 @@ public class CompraController {
             }
 
             List<Producto> productos = productoService.listarProductos();
+            List<SerieDocVentaCompra> seriesDocumento = serieDocService.findAll();
 
             model.addAttribute("compra", compra);
             model.addAttribute("proveedores", proveedores);
             model.addAttribute("productos", productos);
+            model.addAttribute("seriesDocumento", seriesDocumento);
 
             System.out.println("=== DEBUG NUEVA COMPRA ===");
             System.out.println("Proveedores encontrados: " + proveedores.size());

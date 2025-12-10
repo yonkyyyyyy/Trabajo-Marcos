@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Configuración</title>
@@ -20,7 +20,7 @@
                         <i class="bi bi-sliders fs-1 text-primary"></i>
                         <h3>[[${totalParametros}]]</h3>
                         <p>Parámetros</p>
-                        <a href="/parametros" class="btn btn-primary">Gestionar</a>
+                        <a href="configuracion/parametros" class="btn btn-primary">Gestionar</a>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                         <i class="bi bi-list-ol fs-1 text-info"></i>
                         <h3>[[${totalSeries}]]</h3>
                         <p>Series de Documentos</p>
-                        <a href="/series" class="btn btn-info">Gestionar</a>
+                        <a href="configuracion/series" class="btn btn-info">Gestionar</a>
                     </div>
                 </div>
             </div>

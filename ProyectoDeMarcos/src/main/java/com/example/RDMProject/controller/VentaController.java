@@ -31,6 +31,9 @@ public class VentaController {
 
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private SerieDocVentaCompraService serieDocService;
 
     // Listar ventas (ADMIN y VENDEDOR)
     @GetMapping
@@ -92,10 +95,12 @@ public class VentaController {
             // Cargar datos para el formulario
             List<ClienteProveedor> clientes = clienteProveedorService.findClientes();
             List<Producto> productos = productoService.listarProductos();
+            List<SerieDocVentaCompra> seriesDocumento = serieDocService.findAll();
 
             model.addAttribute("venta", venta);
             model.addAttribute("clientes", clientes);
             model.addAttribute("productos", productos);
+            model.addAttribute("seriesDocumento", seriesDocumento);
 
             return "venta/form";
 
@@ -158,6 +163,18 @@ public class VentaController {
 
             if (venta.getDescuento() == null) {
                 venta.setDescuento(0.0);
+            }
+
+            // Procesar documento de venta y numerador
+            if (venta.getDocumento() != null && venta.getDocumento().getIdDocVentaCompra() != null) {
+                SerieDocVentaCompra documento = serieDocService.findById(venta.getDocumento().getIdDocVentaCompra())
+                        .orElse(null);
+                if (documento != null) {
+                    venta.setDocumento(documento);
+                    // Incrementar y asignar el numerador
+                    Integer nuevoNumerador = serieDocService.incrementarNumerador(documento.getIdDocVentaCompra());
+                    venta.setNumerador(nuevoNumerador);
+                }
             }
 
             // Procesar detalles
@@ -287,5 +304,29 @@ public class VentaController {
         }
 
         return "redirect:/ventas";
+    }
+    
+    // API para obtener el siguiente numerador de una serie
+    @GetMapping("/api/siguiente-numerador/{idDocVentaCompra}")
+    @ResponseBody
+    public java.util.Map<String, Object> getSiguienteNumerador(@PathVariable Long idDocVentaCompra) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        try {
+            SerieDocVentaCompra serie = serieDocService.findById(idDocVentaCompra).orElse(null);
+            if (serie != null) {
+                Integer siguiente = serieDocService.getSiguienteNumerador(idDocVentaCompra);
+                response.put("success", true);
+                response.put("serie", serie.getSerie());
+                response.put("numerador", siguiente);
+                response.put("correlativo", serie.getSerie() + "-" + String.format("%08d", siguiente));
+            } else {
+                response.put("success", false);
+                response.put("error", "Serie no encontrada");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
     }
 }

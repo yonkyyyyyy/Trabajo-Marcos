@@ -40,13 +40,13 @@
         <div class="col-12">
             <h1 class="display-4">Recuerdo de mi Madre</h1>
             <p class="lead">Gestión profesional de florería</p>
-          <p class="lead">En Recuerdo de mi Madre creemos en la fuerza de lo natural y en la belleza de las flores</p>
-          <p class="lead">como un símbolo eterno de vida, amor y bienestar.</p>
-          <p class="lead">
-            Con más de 20 años de experiencia en la venta de flores, en Recuerdo de mi Madre nos especializamos en crear arreglos florales que transmiten emociones y acompañan cada momento especial de tu vida.
-            Desde hace 5 años, ampliamos nuestra pasión por lo natural con la venta de medicina natural y plantas medicinales, brindando a nuestros clientes productos de calidad que promueven el bienestar y la salud de manera tradicional y confiable.
-          
-          </p>
+            <p class="lead">En Recuerdo de mi Madre creemos en la fuerza de lo natural y en la belleza de las flores</p>
+            <p class="lead">como un símbolo eterno de vida, amor y bienestar.</p>
+            <p class="lead">
+                Con más de 20 años de experiencia en la venta de flores, en Recuerdo de mi Madre nos especializamos en crear arreglos florales que transmiten emociones y acompañan cada momento especial de tu vida.
+                Desde hace 5 años, ampliamos nuestra pasión por lo natural con la venta de medicina natural y plantas medicinales, brindando a nuestros clientes productos de calidad que promueven el bienestar y la salud de manera tradicional y confiable.
+
+            </p>
             <hr class="my-4">
         </div>
     </div>
@@ -110,11 +110,20 @@
                                         <p class="text-danger fw-bold my-1" th:text="'S/ ' + ${producto.precio}">S/ 0.00</p>
 
                                         <div class="d-flex justify-content-center align-items-center my-2">
-                                            <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">-</button>
-                                            <span class="mx-2 fw-bold small">1</span>
-                                            <button class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width: 30px; height: 30px;">+</button>
+                                            <button type="button" class="btn btn-sm btn-light border rounded-circle shadow-sm"
+                                                    style="width: 30px; height: 30px;"
+                                                    th:onclick="'cambiarCantidad(' + ${producto.id} + ', -1)'">-</button>
+                                            <span class="mx-2 fw-bold small" th:id="'cantidad-' + ${producto.id}">1</span>
+                                            <button type="button" class="btn btn-sm btn-light border rounded-circle shadow-sm"
+                                                    style="width: 30px; height: 30px;"
+                                                    th:onclick="'cambiarCantidad(' + ${producto.id} + ', 1)'">+</button>
                                         </div>
-                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill w-100 mt-auto">Añadir</a>
+                                        <form th:action="@{/cart/add/{id}(id=${producto.id})}" method="post" class="mt-auto">
+                                            <input type="hidden" th:id="'input-cantidad-' + ${producto.id}" name="cantidad" value="1" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill w-100">
+                                                <i class="bi bi-cart-plus me-1"></i>Añadir
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -158,14 +167,29 @@
     </div>
 </div>
 <div class="container py-5">
-<div class="ratio ratio-16x9">
-  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d18856.197743238827!2d-81.1130905!3d-5.0902175!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9049e726a352df93%3A0xc1f877b959c6fc0f!2sFlorer%C3%ADa%20%22Recuerdo%20de%20mi%20madre%22!5e1!3m2!1ses!2spe!4v1765031571842!5m2!1ses!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-</div>
+    <div class="ratio ratio-16x9">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d18856.197743238827!2d-81.1130905!3d-5.0902175!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9049e726a352df93%3A0xc1f877b959c6fc0f!2sFlorer%C3%ADa%20%22Recuerdo%20de%20mi%20madre%22!5e1!3m2!1ses!2spe!4v1765031571842!5m2!1ses!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
 </div>
 
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function cambiarCantidad(productoId, delta) {
+        const spanCantidad = document.getElementById('cantidad-' + productoId);
+        const inputCantidad = document.getElementById('input-cantidad-' + productoId);
+
+        let cantidad = parseInt(spanCantidad.textContent);
+        cantidad += delta;
+
+        if (cantidad < 1) cantidad = 1;
+        if (cantidad > 99) cantidad = 99;
+
+        spanCantidad.textContent = cantidad;
+        inputCantidad.value = cantidad;
+    }
+</script>
 </body>
 </html>

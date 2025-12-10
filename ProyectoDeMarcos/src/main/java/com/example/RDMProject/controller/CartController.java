@@ -96,6 +96,8 @@ public class CartController {
             }
 
             session.setAttribute("carrito", carrito);
+            // Actualizar el contador del carrito para el badge en el header
+            actualizarContadorCarrito(session, carrito);
 
             redirectAttributes.addFlashAttribute("mensaje",
                     "Producto agregado al carrito");
@@ -109,6 +111,14 @@ public class CartController {
         }
 
         return "redirect:/productos";
+    }
+
+    // Método auxiliar para actualizar el contador del carrito
+    private void actualizarContadorCarrito(HttpSession session, Map<Long, ItemCarrito> carrito) {
+        int totalItems = carrito.values().stream()
+                .mapToInt(ItemCarrito::getCantidad)
+                .sum();
+        session.setAttribute("carritoCount", totalItems);
     }
 
     // Actualizar cantidad de un producto
@@ -139,6 +149,8 @@ public class CartController {
 
                 item.setCantidad(cantidad);
                 session.setAttribute("carrito", carrito);
+                // Actualizar el contador del carrito
+                actualizarContadorCarrito(session, carrito);
 
                 redirectAttributes.addFlashAttribute("mensaje", "Cantidad actualizada");
             }
@@ -162,6 +174,8 @@ public class CartController {
             Map<Long, ItemCarrito> carrito = obtenerCarrito(session);
             carrito.remove(id);
             session.setAttribute("carrito", carrito);
+            // Actualizar el contador del carrito
+            actualizarContadorCarrito(session, carrito);
 
             redirectAttributes.addFlashAttribute("mensaje",
                     "Producto eliminado del carrito");
@@ -179,6 +193,7 @@ public class CartController {
     @GetMapping("/cart/clear")
     public String vaciarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
         session.removeAttribute("carrito");
+        session.setAttribute("carritoCount", 0);
         redirectAttributes.addFlashAttribute("mensaje", "Carrito vaciado");
         redirectAttributes.addFlashAttribute("tipoMensaje", "info");
         return "redirect:/cart";
@@ -242,6 +257,7 @@ public class CartController {
 
             // Limpiar el carrito
             session.removeAttribute("carrito");
+            session.setAttribute("carritoCount", 0);
 
             redirectAttributes.addFlashAttribute("mensaje",
                     "¡Pedido creado exitosamente! Número de pedido: " + ventaGuardada.getId());
