@@ -6,6 +6,8 @@
     <title>Nueva Venta - Florería RDM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link rel="icon" href="/img/logo_empresa.png" type="image/png">
 </head>
 <body>
 
@@ -58,7 +60,7 @@
                     <!-- Tipo de Documento de Venta -->
                     <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold">Tipo de Documento *</label>
-                        <select class="form-select" th:field="*{documento.idDocVentaCompra}"
+                        <select class="form-select" th:field="*{documento.idDocVentaCompra}" 
                                 id="selectDocumento" required onchange="actualizarNumerador()">
                             <option value="">Seleccionar documento...</option>
                             <option th:each="doc : ${seriesDocumento}"
@@ -70,13 +72,13 @@
                     <!-- Correlativo/Numerador -->
                     <div class="col-md-2 mb-3">
                         <label class="form-label fw-bold">Correlativo</label>
-                        <input type="text" class="form-control" id="correlativoPreview" readonly
+                        <input type="text" class="form-control" id="correlativoPreview" readonly 
                                placeholder="Automático">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Cliente *</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="buscarDocumentoCliente"
+                            <input type="text" class="form-control" id="buscarDocumentoCliente" 
                                    placeholder="Buscar por N° documento..." onkeyup="buscarCliente()">
                             <select class="form-select" th:field="*{cliente.id}" id="selectCliente" required>
                                 <option value="">Seleccionar cliente...</option>
@@ -321,18 +323,18 @@
             actualizarNumerador();
         }
     });
-
+    
     // Actualizar numerador al cambiar el tipo de documento
     function actualizarNumerador() {
         const select = document.getElementById('selectDocumento');
         const idDoc = select.value;
         const correlativoPreview = document.getElementById('correlativoPreview');
-
+        
         if (!idDoc) {
             correlativoPreview.value = '';
             return;
         }
-
+        
         fetch('/ventas/api/siguiente-numerador/' + idDoc)
             .then(response => response.json())
             .then(data => {
@@ -347,13 +349,13 @@
                 correlativoPreview.value = 'Error';
             });
     }
-
+    
     // Buscar cliente por número de documento
     function buscarCliente() {
         const input = document.getElementById('buscarDocumentoCliente');
         const select = document.getElementById('selectCliente');
         const busqueda = input.value.toLowerCase().trim();
-
+        
         if (busqueda.length < 2) {
             // Mostrar todas las opciones
             for (let option of select.options) {
@@ -361,16 +363,16 @@
             }
             return;
         }
-
+        
         for (let option of select.options) {
             if (option.value === '') {
                 option.style.display = '';
                 continue;
             }
-
+            
             const documento = option.getAttribute('data-documento') || '';
             const texto = option.text.toLowerCase();
-
+            
             if (documento.includes(busqueda) || texto.includes(busqueda)) {
                 option.style.display = '';
                 // Seleccionar automáticamente si hay coincidencia exacta de documento
