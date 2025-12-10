@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -50,6 +51,7 @@ public class VentaController {
 
             model.addAttribute("ventas", ventas);
             model.addAttribute("estadoFiltro", estado);
+            model.addAttribute("estados", Arrays.asList(EstadoPedido.values())); // AGREGADO
 
             return "venta/lista";
 
@@ -210,7 +212,7 @@ public class VentaController {
         }
     }
 
-    // Ver detalle
+    // Ver detalle - CORREGIDO AQUÍ
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public String verDetalle(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
@@ -222,6 +224,9 @@ public class VentaController {
             }
 
             model.addAttribute("venta", venta);
+            // AGREGAR LISTA DE ESTADOS DISPONIBLES
+            model.addAttribute("estados", Arrays.asList(EstadoPedido.values()));
+
             return "venta/detalle";
 
         } catch (Exception e) {
@@ -257,7 +262,7 @@ public class VentaController {
             redirectAttributes.addFlashAttribute("error", "Error al cambiar estado");
         }
 
-        return "redirect:/ventas";
+        return "redirect:/ventas/" + id;
     }
 
     // Eliminar venta

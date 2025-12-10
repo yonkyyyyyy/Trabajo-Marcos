@@ -6,215 +6,377 @@
     <title>Compras - Florería RDM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .estado-badge {
+            font-size: 0.85rem;
+            padding: 6px 12px;
+        }
+        .stat-card {
+            border-left: 4px solid;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .table-actions {
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
-    
-    <div sec:authorize="hasRole('ADMIN')">
-        <div th:replace="~{fragments/header-admin :: header-admin}"></div>
+
+<div sec:authorize="hasRole('ADMIN')">
+    <div th:replace="~{fragments/header-admin :: header-admin}"></div>
+</div>
+<div sec:authorize="hasRole('VENDEDOR')">
+    <div th:replace="~{fragments/header-vendedor :: header-vendedor}"></div>
+</div>
+
+<div class="container-fluid mt-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+            <li class="breadcrumb-item active">Compras</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-cart-check text-primary me-2"></i>
+            Gestión de Compras
+        </h2>
+        <a href="/compras/nueva" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Compra
+        </a>
     </div>
-    <div sec:authorize="hasRole('VENDEDOR')">
-        <div th:replace="~{fragments/header-vendedor :: header-vendedor}"></div>
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <div class="container mt-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                <li class="breadcrumb-item active">Compras</li>
-            </ol>
-        </nav>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="bi bi-cart-check text-success me-2"></i>Gestión de Compras</h2>
-            <a href="/compras/nueva" class="btn btn-success">
-                <i class="bi bi-plus-circle me-2"></i>Nueva Compra
-            </a>
-        </div>
-
-        <div th:if="${mensaje}" class="alert alert-dismissible fade show" 
-             th:classappend="${tipoMensaje != null ? 'alert-' + tipoMensaje : 'alert-success'}">
-            <i class="bi bi-check-circle me-2"></i>
-            <span th:text="${mensaje}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- Filtro por Estado -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="get" action="/compras" class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Filtrar por Estado</label>
-                        <select name="estado" class="form-select" onchange="this.form.submit()">
-                            <option value="">Todos los estados</option>
-                            <option th:each="est : ${estados}" 
-                                    th:value="${est.name()}" 
-                                    th:text="${est.descripcion}"
-                                    th:selected="${estadoFiltro != null && estadoFiltro == est.name()}">
-                            </option>
-                        </select>
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Compras</h6>
+                            <h3 class="mb-0" th:text="${totalCompras}">0</h3>
+                        </div>
+                        <div class="text-primary">
+                            <i class="bi bi-cart-check" style="font-size: 2.5rem;"></i>
+                        </div>
                     </div>
-                    <div class="col-md-8 d-flex align-items-end">
-                        <a href="/compras" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
-                        </a>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
 
-        <!-- Tabla de Compras -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Proveedor</th>
-                                <th>Usuario</th>
-                                <th class="text-end">Total</th>
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:if="${#lists.isEmpty(compras)}">
-                                <td colspan="7" class="text-center py-4 text-muted">
-                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    No hay compras registradas
-                                </td>
-                            </tr>
-                            <tr th:each="compra : ${compras}">
-                                <td><strong>#[[${compra.id}]]</strong></td>
-                                <td>
-                                    <i class="bi bi-calendar3 text-muted"></i>
-                                    [[${#temporals.format(compra.fechaCompra, 'dd/MM/yyyy')}]]
-                                </td>
-                                <td>
-                                    <span th:if="${compra.proveedor != null}" 
-                                          th:text="${compra.proveedor.razonSocial}"></span>
-                                    <span th:if="${compra.proveedor == null}" class="text-muted">Sin proveedor</span>
-                                </td>
-                                <td>
-                                    <i class="bi bi-person text-muted"></i>
-                                    [[${compra.usuario?.nombreCompleto ?: 'N/A'}]]
-                                </td>
-                                <td class="text-end">
-                                    <strong class="text-success">
-                                        S/ [[${#numbers.formatDecimal(compra.total, 1, 2)}]]
-                                    </strong>
-                                </td>
-                                <td class="text-center">
-                                    <span th:if="${compra.estado != null}" 
-                                          th:class="'badge bg-' + ${compra.estado.badgeColor}">
-                                        [[${compra.estado.descripcion}]]
+        <div class="col-md-3">
+            <div class="card stat-card border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Monto Total</h6>
+                            <h3 class="mb-0">S/ [[${#numbers.formatDecimal(montoTotal, 1, 2)}]]</h3>
+                        </div>
+                        <div class="text-success">
+                            <i class="bi bi-cash-stack" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Compras Hoy</h6>
+                            <h3 class="mb-0">S/ [[${#numbers.formatDecimal(comprasHoy, 1, 2)}]]</h3>
+                        </div>
+                        <div class="text-info">
+                            <i class="bi bi-calendar-check" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Pendientes</h6>
+                            <h3 class="mb-0" th:text="${pendientes}">0</h3>
+                        </div>
+                        <div class="text-warning">
+                            <i class="bi bi-hourglass-split" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel me-2"></i>Filtros
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="/compras" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Estado:</label>
+                    <select name="estado" class="form-select">
+                        <option value="">Todos los estados</option>
+                        <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendiente</option>
+                        <option value="EN_PROCESO" th:selected="${estadoFiltro == 'EN_PROCESO'}">En Proceso</option>
+                        <option value="COMPLETADO" th:selected="${estadoFiltro == 'COMPLETADO'}">Completado</option>
+                        <option value="CANCELADO" th:selected="${estadoFiltro == 'CANCELADO'}">Cancelado</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-2"></i>Filtrar
+                    </button>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <a href="/compras" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle me-2"></i>Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Compras -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul me-2"></i>
+                Lista de Compras
+                <span th:if="${estadoFiltro}" class="badge bg-light text-dark ms-2">
+                        Filtrado por: [[${estadoFiltro}]]
+                    </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${compras.empty}" class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <p class="text-muted mt-3 mb-0">No hay compras registradas</p>
+                <a href="/compras/nueva" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-2"></i>Crear Primera Compra
+                </a>
+            </div>
+
+            <div th:if="${!compras.empty}" class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Responsable</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="compra : ${compras}">
+                        <td class="text-center">
+                            <strong>#[[${compra.id}]]</strong>
+                        </td>
+                        <td>
+                            <div>
+                                <strong th:text="${compra.proveedor?.nombreRazonSocial}"></strong>
+                            </div>
+                            <small class="text-muted" th:if="${compra.observaciones}">
+                                <i class="bi bi-chat-left-text me-1"></i>
+                                [[${#strings.abbreviate(compra.observaciones, 50)}]]
+                            </small>
+                        </td>
+                        <td>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            <span th:text="${#temporals.format(compra.fechaCompra, 'dd/MM/yyyy')}"></span>
+                        </td>
+                        <td>
+                            <i class="bi bi-person me-1"></i>
+                            <span th:text="${compra.usuario?.nombreCompleto}"></span>
+                        </td>
+                        <td class="text-center">
+                                    <span class="badge estado-badge"
+                                          th:classappend="${compra.estado.name() == 'PENDIENTE'} ? 'bg-warning text-dark' :
+                                                          ${compra.estado.name() == 'EN_PROCESO'} ? 'bg-info' :
+                                                          ${compra.estado.name() == 'COMPLETADO'} ? 'bg-success' :
+                                                          ${compra.estado.name() == 'CANCELADO'} ? 'bg-danger' : 'bg-secondary'"
+                                          th:text="${compra.estado.name()}">
                                     </span>
-                                    <span th:if="${compra.estado == null}" class="badge bg-secondary">
-                                        Sin estado
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-sm">
-                                        <a th:href="@{/compras/{id}(id=${compra.id})}" 
-                                           class="btn btn-outline-primary" 
-                                           title="Ver detalle">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a th:href="@{/compras/editar/{id}(id=${compra.id})}" 
-                                           class="btn btn-outline-secondary" 
-                                           title="Editar"
-                                           th:if="${compra.estado?.name() == 'PENDIENTE'}">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" 
-                                                class="btn btn-outline-danger" 
-                                                title="Eliminar"
-                                                sec:authorize="hasRole('ADMIN')"
-                                                th:if="${compra.estado?.name() == 'PENDIENTE' or compra.estado?.name() == 'CANCELADO'}"
-                                                onclick="confirmarEliminar([[${compra.id}]])">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-success">
+                                S/ [[${#numbers.formatDecimal(compra.total, 1, 2)}]]
+                            </strong>
+                        </td>
+                        <td class="text-center table-actions">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a th:href="@{/compras/{id}(id=${compra.id})}"
+                                   class="btn btn-outline-primary"
+                                   title="Ver Detalle">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-outline-warning"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#modalEstado' + ${compra.id}"
+                                        title="Cambiar Estado">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+
+                                <button type="button"
+                                        sec:authorize="hasRole('ADMIN')"
+                                        class="btn btn-outline-danger"
+                                        th:onclick="'eliminarCompra(' + ${compra.id} + ')'"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Modal Cambiar Estado -->
+                            <div class="modal fade" th:id="'modalEstado' + ${compra.id}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-warning">
+                                            <h5 class="modal-title">
+                                                <i class="bi bi-arrow-repeat me-2"></i>
+                                                Cambiar Estado - Compra #[[${compra.id}]]
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form th:action="@{/compras/{id}/cambiar-estado(id=${compra.id})}" method="post">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Estado Actual:</label>
+                                                    <p>
+                                                                <span class="badge bg-secondary fs-6"
+                                                                      th:text="${compra.estado.name()}"></span>
+                                                    </p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Nuevo Estado:</label>
+                                                    <select name="nuevoEstado" class="form-select" required>
+                                                        <option value="PENDIENTE">PENDIENTE</option>
+                                                        <option value="EN_PROCESO">EN_PROCESO</option>
+                                                        <option value="COMPLETADO">COMPLETADO</option>
+                                                        <option value="CANCELADO">CANCELADO</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+                                                <button type="submit" class="btn btn-warning">
+                                                    <i class="bi bi-check-circle me-2"></i>Actualizar
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
 
-        <!-- Estadísticas -->
-        <div class="row mt-4" th:if="${!#lists.isEmpty(compras)}">
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h6 class="text-muted">Total de Compras</h6>
-                        <h3 class="text-primary">[[${#lists.size(compras)}]]</h3>
-                    </div>
+    <!-- Resumen por Estado -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart me-2"></i>Resumen por Estado
+                    </h5>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h6 class="text-muted">Monto Total</h6>
-                        <h3 class="text-success">
-                            S/ [[${#numbers.formatDecimal(#aggregates.sum(compras.![total]), 1, 2)}]]
-                        </h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h6 class="text-muted">Compras Hoy</h6>
-                        <h3 class="text-info">
-                            [[${#lists.size(#lists.select(compras, c -> c.fechaCompra == T(java.time.LocalDate).now()))}]]
-                        </h3>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="p-3 bg-warning bg-opacity-10 rounded">
+                                <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1">
+                                    <span th:text="${compras.?[estado.name() == 'PENDIENTE'].size()}">0</span>
+                                </h4>
+                                <small class="text-muted">Pendientes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-info bg-opacity-10 rounded">
+                                <i class="bi bi-gear text-info" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1">
+                                    <span th:text="${compras.?[estado.name() == 'EN_PROCESO'].size()}">0</span>
+                                </h4>
+                                <small class="text-muted">En Proceso</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-success bg-opacity-10 rounded">
+                                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1">
+                                    <span th:text="${compras.?[estado.name() == 'COMPLETADO'].size()}">0</span>
+                                </h4>
+                                <small class="text-muted">Completadas</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-danger bg-opacity-10 rounded">
+                                <i class="bi bi-x-circle text-danger" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1">
+                                    <span th:text="${compras.?[estado.name() == 'CANCELADO'].size()}">0</span>
+                                </h4>
+                                <small class="text-muted">Canceladas</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-    <!-- Modal de Confirmación de Eliminación -->
-    <div class="modal fade" id="modalEliminar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas eliminar esta compra?</p>
-                    <p class="text-danger"><strong>Esta acción no se puede deshacer.</strong></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form id="formEliminar" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Form oculto para eliminar -->
+<form id="formEliminar" method="post" style="display: none;">
+    <input type="hidden" name="_method" value="delete">
+</form>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function confirmarEliminar(id) {
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function eliminarCompra(id) {
+        if (confirm('¿Está seguro de eliminar esta compra?\n\nSolo se pueden eliminar compras en estado PENDIENTE o CANCELADO.')) {
             const form = document.getElementById('formEliminar');
             form.action = '/compras/' + id + '/eliminar';
-            const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
-            modal.show();
+            form.submit();
         }
-    </script>
+    }
+</script>
 </body>
 </html>
